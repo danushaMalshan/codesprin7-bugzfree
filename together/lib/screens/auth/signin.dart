@@ -15,39 +15,44 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AppLogo(width),
-                CustomSignupButton(
-                    Colors.black87,
-                    'assets/icons/apple_logo.png',
-                    'Continue with Apple',
-                    Colors.white),
-                CustomSignupButton(
-                    Colors.blue.shade600,
-                    'assets/icons/facebook.png',
-                    'Continue with Facebook',
-                    Colors.white),
-                CustomSignupButton(
-                  Colors.grey.withOpacity(0.5),
-                  'assets/icons/google.png',
-                  'Continue with Google',
-                  Color.fromARGB(255, 1, 121, 226),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Color(0xFFFFFFFF),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AppLogo(width),
+                    CustomSignupButton(
+                        Colors.black87,
+                        'assets/icons/apple_logo.png',
+                        'Continue with Apple',
+                        Colors.white),
+                    CustomSignupButton(
+                        Colors.blue.shade600,
+                        'assets/icons/facebook.png',
+                        'Continue with Facebook',
+                        Colors.white),
+                    CustomSignupButton(
+                      Colors.grey.withOpacity(0.5),
+                      'assets/icons/google.png',
+                      'Continue with Google',
+                      Color.fromARGB(255, 1, 121, 226),
+                    ),
+                    OrText(),
+                    SignInWithEmailPassword(width),
+                    LoginButton(width),
+                    ForgotPasswordText()
+                  ],
                 ),
-                OrText(),
-                SignInWithEmailPassword(width),
-                LoginButton(width),
-                ForgotPasswordText()
-              ],
+              ),
             ),
           ),
         ),
