@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/screens/auth/signin.dart';
+import 'package:together/screens/select_category.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,19 +15,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          primaryColor: const Color(0xFF142867),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            iconTheme: IconThemeData(
+              color: Color(0xFF142867),
+            ),
+            elevation: 2,
+          ),
+          scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+          fontFamily: 'Poppins'),
       builder: (context, child) => ResponsiveWrapper.builder(child,
           maxWidth: 1200,
           minWidth: 480,
           defaultScale: true,
           breakpoints: [
-            ResponsiveBreakpoint.resize(480, name: MOBILE),
-            ResponsiveBreakpoint.autoScale(800, name: TABLET),
-            ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+            const ResponsiveBreakpoint.resize(480, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
-          background: Container(color: Color(0xFFF5F5F5))),
-      // initialRoute: "/",
-      home: SignInScreen(),
+          background: Container(color: const Color(0xFFF5F5F5))),
+      home: const SelectCategoryScreen(),
     );
   }
 }
-

@@ -174,8 +174,6 @@ class _SignInScreenState extends State<SignInScreen> {
         height: 60,
         child: ListTile(
           shape: RoundedRectangleBorder(
-            //<-- SEE HERE
-            // side: BorderSide(width: 2),
             borderRadius: BorderRadius.circular(20),
           ),
           tileColor: color,
@@ -188,7 +186,10 @@ class _SignInScreenState extends State<SignInScreen> {
               textAlign: TextAlign.center,
             ),
           ),
-          trailing: CircleAvatar(backgroundColor: Colors.transparent),
+          trailing: Container(
+            height: 32,
+            width: 32,
+          ),
           leading: Image.asset(
             image,
             height: 32,
