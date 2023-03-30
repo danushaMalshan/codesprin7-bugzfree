@@ -1,100 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+import 'package:together/screens/auth/signin.dart';
+import 'package:together/screens/select_category.dart';
 
 void main() {
-  runApp(
-    SignUp(),
-  );
+  runApp(const MyApp());
 }
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<SignUp> createState() => _SignUpState();
-}
-
-Widget loginButtons(
-    String title, String imagePath, Color titleColor, Color backColor) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-    child: Container(
-      child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        tileColor: backColor,
-        leading: Image.asset(imagePath,height: 30,),
-        title: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              color: titleColor,
-              fontSize: 18,
-            ),
-          ),
-        ),
-        trailing:Icon(Icons.ice_skating,color:Colors.transparent),
-      ),
-    ),
-  );
-}
-
-class _SignUpState extends State<SignUp> {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Image(
-                image: AssetImage("Assets/Images/Logo.jpg"),
-                height: 350,
-                width: 300,
-              ),
-              SizedBox(height: 25),
-              loginButtons("Continue with Apple",
-                  "Assets/Images/apple_logo.png", Colors.white, Colors.black),
-              loginButtons(
-                "Continue with Facebook",
-                "Assets/Images/facebook.png",
-                Colors.white,
-                Color(0xff1877f2),
-              ),
-              loginButtons(
-                "Continue with Google",
-                "Assets/Images/google.png",
-                Color(0xff142867),
-                Color(0xffd9d9d9),
-              ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-          child: Container(
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              tileColor: Color(0xffd9d9d9),
-              leading: Icon(Icons.mail_outline_rounded,size:30),
-              title: Center(
-                child: Text(
-                  "Continue with Email",
-                  style: TextStyle(
-                    color: Color(0xff142867),
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              trailing:Icon(Icons.ice_skating,color:Colors.transparent),
+      theme: ThemeData(
+          primaryColor: const Color(0xFF142867),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            iconTheme: IconThemeData(
+              color: Color(0xFF142867),
             ),
+            elevation: 2,
           ),
-        ),
-            ],
-          ),
-        ),
-      ),
+          scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+          fontFamily: 'Poppins'),
+      builder: (context, child) => ResponsiveWrapper.builder(child,
+          maxWidth: 1200,
+          minWidth: 480,
+          defaultScale: true,
+          breakpoints: [
+            const ResponsiveBreakpoint.resize(480, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+          ],
+          background: Container(color: const Color(0xFFF5F5F5))),
+      home: const SelectCategoryScreen(),
     );
   }
 }
