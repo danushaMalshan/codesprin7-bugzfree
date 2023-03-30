@@ -24,10 +24,39 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           mainAxisSpacing: 10,
           padding: EdgeInsets.all(10),
           children: [
-            Container(
-              width: (width - 40) / 3,
-              height: 3000,
-              decoration: BoxDecoration(color: Colors.black),
+            Stack(
+              children: [
+                Container(
+                  width: (width - 40) / 3,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/images/art.jpg'),
+                      )),
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    width: (width - 40) / 3,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          stops: [
+                            0.2,
+                            0.8,
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Color(0xFF142867).withOpacity(0.8),
+                            Colors.white.withOpacity(0.1),
+                          ]),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                )
+              ],
             ),
           ]),
     );
