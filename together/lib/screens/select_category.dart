@@ -18,6 +18,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       appBar:
           PreferredSize(preferredSize: Size.fromHeight(70), child: AppBar()),
       body: GridView.count(
+          childAspectRatio: 2 / 3,
           crossAxisCount: 3,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
@@ -25,7 +26,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           children: [
             Container(
               width: (width - 40) / 3,
-              height: 10,
+              height: 3000,
               decoration: BoxDecoration(color: Colors.black),
             ),
           ]),
