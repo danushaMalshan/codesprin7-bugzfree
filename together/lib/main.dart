@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/select_category.dart';
+import 'package:together/screens/auth/signup.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -41,3 +44,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
