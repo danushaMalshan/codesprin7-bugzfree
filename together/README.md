@@ -1,4 +1,4 @@
-# codesprin
+# together
 
 A new Flutter project.
 
