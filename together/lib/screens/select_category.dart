@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:together/components/appbar.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
   const SelectCategoryScreen({Key? key}) : super(key: key);
@@ -36,8 +37,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar:
-            PreferredSize(preferredSize: Size.fromHeight(70), child: AppBar()),
+        appBar: myAppBar(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/screens/auth/signin.dart';
+import 'package:together/screens/user_details.dart';
+import 'package:together/screens/user_profile.dart';
+import 'package:together/screens/publish_event.dart';
 import 'package:together/screens/select_category.dart';
 
 void main() {
@@ -16,17 +19,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor: const Color(0xFF142867),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            iconTheme: IconThemeData(
-              color: Color(0xFF142867),
-            ),
-            elevation: 2,
+        primaryColor: const Color(0xFF142867),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: Color(0xFF142867),
           ),
-          scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-          fontFamily: 'Poppins'),
+          elevation: 2,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        fontFamily: 'Poppins',
+      ),
       builder: (context, child) => ResponsiveWrapper.builder(child,
           maxWidth: 1200,
           minWidth: 480,
@@ -37,7 +41,7 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: const Color(0xFFF5F5F5))),
-      home: const SelectCategoryScreen(),
+      home: UserDetailsScreen(),
     );
   }
 }

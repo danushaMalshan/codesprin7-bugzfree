@@ -1,9 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
-import 'package:together/components/my_text_field.dart';
 
-Widget eventPublish() {
+
+class PublishEventScreen extends StatelessWidget {
+  const PublishEventScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
   return Scaffold(
     appBar: myAppBar(),
     body: SafeArea(
@@ -43,4 +46,24 @@ Widget eventPublish() {
       ),
     ),
   );
+  }
+
+  Widget myTextField(IconData icon, String eventName) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 30.0,vertical: 10.0),
+    child: TextField(
+      decoration: InputDecoration(
+        labelText: eventName,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        icon: Icon(
+          icon,
+          color: Color(0xff142867),
+        ),
+      ),
+    ),
+  );
+}
+
 }
