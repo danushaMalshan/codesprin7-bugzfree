@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
-import 'package:together/components/my_list_tile.dart';
+
 
 class UserDetailsScreen extends StatelessWidget {
   const UserDetailsScreen({Key? key}) : super(key: key);

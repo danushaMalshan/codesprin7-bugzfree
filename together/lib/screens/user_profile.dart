@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
-import 'package:together/components/my_list_tile.dart';
 
 
 class UserProfileScreen extends StatelessWidget {
