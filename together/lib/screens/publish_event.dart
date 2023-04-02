@@ -1,6 +1,7 @@
-import 'components/appbar.dart';
+
 import 'package:flutter/material.dart';
-import 'components/my_text_field.dart';
+import 'package:together/components/appbar.dart';
+import 'package:together/components/my_text_field.dart';
 
 Widget eventPublish() {
   return Scaffold(

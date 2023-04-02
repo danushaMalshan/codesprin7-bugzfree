@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'components/appbar.dart';
-import 'components/my_list_tile.dart';
+import 'package:together/components/appbar.dart';
+import 'package:together/components/my_list_tile.dart';
+
 
 Widget changeUserDetails() {
   return Scaffold(
