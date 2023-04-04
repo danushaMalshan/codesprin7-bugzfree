@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
 
 
+
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
 
