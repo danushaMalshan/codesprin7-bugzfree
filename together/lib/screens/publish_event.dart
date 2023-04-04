@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
 
 
+
 class PublishEventScreen extends StatelessWidget {
   const PublishEventScreen({Key? key}) : super(key: key);
 
