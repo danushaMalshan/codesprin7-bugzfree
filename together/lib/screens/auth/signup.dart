@@ -15,23 +15,24 @@ class _SignUpState extends State<SignUp> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            const SizedBox(height: 20),
             const Image(
-              image: AssetImage("Assets/Images/Logo.jpg"),
+              image: AssetImage("assets/images/logo.jpeg"),
               height: 350,
               width: 300,
             ),
-            const SizedBox(height: 25),
-            loginButtons("Continue with Apple", "Assets/Images/apple_logo.png",
+            const SizedBox(height: 70),
+            loginButtons("Continue with Apple", "assets/icons/apple_logo.png",
                 Colors.white, Colors.black),
             loginButtons(
               "Continue with Facebook",
-              "Assets/Images/facebook.png",
+              "assets/icons/facebook.png",
               Colors.white,
               const Color(0xff1877f2),
             ),
             loginButtons(
               "Continue with Google",
-              "Assets/Images/google.png",
+              "assets/icons/google.png",
               const Color(0xff142867),
               const Color(0xffd9d9d9),
             ),
@@ -55,6 +56,7 @@ class _SignUpState extends State<SignUp> {
                 trailing: const Icon(Icons.ice_skating, color: Colors.transparent),
               ),
             ),
+            const SizedBox(height: 20),
             const Text("Already have an account?"),
           ],
         ),
