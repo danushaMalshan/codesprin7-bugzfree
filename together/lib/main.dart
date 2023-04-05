@@ -6,6 +6,7 @@ import 'package:together/screens/user_details.dart';
 import 'package:together/screens/user_profile.dart';
 import 'package:together/screens/publish_event.dart';
 import 'package:together/screens/select_category.dart';
+import 'package:together/screens/auth/firstscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: const Color(0xFFF5F5F5))),
-      home: SignUp(),
+      home: firstScreen(),
     );
   }
 }
