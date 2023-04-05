@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
+import 'package:together/screens/event_details.dart';
 import 'package:together/screens/find_location.dart';
 import 'package:together/screens/user_details.dart';
 import 'package:together/screens/user_profile.dart';
@@ -46,7 +47,9 @@ class MyApp extends StatelessWidget {
           background: Container(color: const Color(0xFFF5F5F5))),
 
 
+
       home: FindLocationScreen(),
+
 
     );
   }
