@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
+import 'package:together/screens/find_location.dart';
 import 'package:together/screens/user_details.dart';
 import 'package:together/screens/user_profile.dart';
 import 'package:together/screens/publish_event.dart';
@@ -45,7 +46,9 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: const Color(0xFFF5F5F5))),
+
       home: myAllMessages(),
+
     );
   }
 }
