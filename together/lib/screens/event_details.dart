@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
 import 'dart:async';
 
+import 'package:together/components/bottom_navigation_bar.dart';
+
 class EventDetailsScreen extends StatefulWidget {
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();

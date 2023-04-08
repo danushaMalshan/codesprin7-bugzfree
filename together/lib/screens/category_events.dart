@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:together/components/appbar.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 
 class CategoryEventsScreen extends StatefulWidget {
   const CategoryEventsScreen({Key? key}) : super(key: key);
