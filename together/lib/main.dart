@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
 import 'package:together/screens/category_events.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: const Color(0xFFF5F5F5))),
-      home: CategoryEventsScreen(),
+      home: CustomNavigationBar(index: 2),
     );
   }
 }

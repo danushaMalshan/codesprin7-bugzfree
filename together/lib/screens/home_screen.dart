@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -30,8 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(
+      
       appBar: myAppBar(),
       body: SizedBox(
         width: width,
@@ -55,249 +57,242 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Column PreferredList(double width) {
     return Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 0),
-                      child: Text(
-                        'Preferred',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: width,
-                    height: (preferred.length) * 216,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: preferred.length,
-                      itemBuilder: ((context, index) => Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.all(8),
-                                width: width - 50,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(preferred[index][1]),
-                                    )),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  width: width - 55,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      stops: [
-                                        0.2,
-                                        0.8,
-                                      ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color(0xFF142867).withOpacity(0.8),
-                                        Colors.white.withOpacity(0.1),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                  bottom: 10,
-                                  left: 30,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        preferred[index][0],
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ))
-                            ],
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 0),
+            child: Text(
+              'Preferred',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Container(
+          width: width,
+          height: (preferred.length) * 216,
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: preferred.length,
+            itemBuilder: ((context, index) => Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      width: width - 50,
+                      height: 200,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(preferred[index][1]),
                           )),
                     ),
-                  ),
-                ],
-              );
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        width: width - 55,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            stops: [
+                              0.2,
+                              0.8,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Color(0xFF142867).withOpacity(0.8),
+                              Colors.white.withOpacity(0.1),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                        bottom: 10,
+                        left: 30,
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              preferred[index][0],
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ))
+                  ],
+                )),
+          ),
+        ),
+      ],
+    );
   }
 
   Column YouMayLikeList(double width) {
     return Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 0),
-                      child: Text(
-                        'You may Like',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: width,
-                    height: 140,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: you_may_like.length,
-                      itemBuilder: ((context, index) => Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.all(8),
-                                width: 200,
-                                height: 140,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image:
-                                          AssetImage(you_may_like[index][1]),
-                                    )),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  width: 200,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      stops: [
-                                        0.2,
-                                        0.8,
-                                      ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color(0xFF142867).withOpacity(0.8),
-                                        Colors.white.withOpacity(0.1),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                  bottom: 10,
-                                  left: 30,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        you_may_like[index][0],
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ))
-                            ],
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 0),
+            child: Text(
+              'You may Like',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Container(
+          width: width,
+          height: 140,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: you_may_like.length,
+            itemBuilder: ((context, index) => Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      width: 200,
+                      height: 140,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(you_may_like[index][1]),
                           )),
                     ),
-                  ),
-                ],
-              );
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        width: 200,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            stops: [
+                              0.2,
+                              0.8,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Color(0xFF142867).withOpacity(0.8),
+                              Colors.white.withOpacity(0.1),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                        bottom: 10,
+                        left: 30,
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              you_may_like[index][0],
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ))
+                  ],
+                )),
+          ),
+        ),
+      ],
+    );
   }
 
   Column TrendingList(double width) {
     return Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 0),
-                      child: Text(
-                        'Trending',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: width,
-                    height: 180,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: trending.length,
-                      itemBuilder: ((context, index) => Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.all(8),
-                                width: 230,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(trending[index][1]),
-                                    )),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  width: 230,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      stops: [
-                                        0.2,
-                                        0.8,
-                                      ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color(0xFF142867).withOpacity(0.8),
-                                        Colors.white.withOpacity(0.1),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                  bottom: 10,
-                                  left: 30,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        trending[index][0],
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ))
-                            ],
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 0),
+            child: Text(
+              'Trending',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Container(
+          width: width,
+          height: 180,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: trending.length,
+            itemBuilder: ((context, index) => Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      width: 230,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(trending[index][1]),
                           )),
                     ),
-                  ),
-                ],
-              );
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        width: 230,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            stops: [
+                              0.2,
+                              0.8,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Color(0xFF142867).withOpacity(0.8),
+                              Colors.white.withOpacity(0.1),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                        bottom: 10,
+                        left: 30,
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              trending[index][0],
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ))
+                  ],
+                )),
+          ),
+        ),
+      ],
+    );
   }
 
   TextField SearchBar() {
