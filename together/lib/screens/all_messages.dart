@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 import '../components/appbar.dart';
 
 class myAllMessages extends StatefulWidget {

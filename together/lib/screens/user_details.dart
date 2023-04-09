@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 
 
 class UserDetailsScreen extends StatelessWidget {

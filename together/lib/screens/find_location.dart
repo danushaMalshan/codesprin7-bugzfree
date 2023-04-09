@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 
 class FindLocationScreen extends StatefulWidget {
   @override

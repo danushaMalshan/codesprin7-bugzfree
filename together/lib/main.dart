@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
+import 'package:together/screens/category_events.dart';
 import 'package:together/screens/event_details.dart';
 import 'package:together/screens/find_location.dart';
 import 'package:together/screens/user_details.dart';
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         fontFamily: 'Poppins',
       ),
+
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         maxWidth: 1200,
@@ -53,6 +56,19 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: PendingReminders(),
+
+      // builder: (context, child) => ResponsiveWrapper.builder(child,
+      //     maxWidth: 1200,
+      //     minWidth: 480,
+      //     defaultScale: true,
+      //     breakpoints: [
+      //       const ResponsiveBreakpoint.resize(480, name: MOBILE),
+      //       const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+      //       const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+      //     ],
+      //     background: Container(color: const Color(0xFFF5F5F5))),
+      // home: HomeScreen(),
+
     );
   }
 }
