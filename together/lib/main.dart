@@ -13,6 +13,7 @@ import 'package:together/screens/select_category.dart';
 import 'package:together/screens/auth/firstscreen.dart';
 import 'package:together/screens/all_messages.dart';
 import 'package:together/screens/pending_reminders.dart';
+import 'package:together/screens/reminders.dart';
 import '/screens/home_screen.dart';
 
 void main() {
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
           color: const Color(0xFFF5F5F5),
         ),
       ),
-      home: PendingReminders(),
+      home: Reminders(),
 
       // builder: (context, child) => ResponsiveWrapper.builder(child,
       //     maxWidth: 1200,
