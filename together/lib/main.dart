@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           color: const Color(0xFFF5F5F5),
         ),
       ),
-      home: PendingReminders(),
+      home: Reminders(),
 
       // builder: (context, child) => ResponsiveWrapper.builder(child,
       //     maxWidth: 1200,
