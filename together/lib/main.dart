@@ -15,6 +15,7 @@ import 'package:together/screens/all_messages.dart';
 import 'package:together/screens/pending_reminders.dart';
 import 'package:together/screens/reminders.dart';
 import 'package:together/screens/publish_event/event_name.dart';
+import 'package:together/screens/publish_event/ticket_details.dart';
 import '/screens/home_screen.dart';
 
 void main() {
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
           color: const Color(0xFFF5F5F5),
         ),
       ),
-      home: EventPublish1(),
+      home: TicketDetails(),
 
       // builder: (context, child) => ResponsiveWrapper.builder(child,
       //     maxWidth: 1200,

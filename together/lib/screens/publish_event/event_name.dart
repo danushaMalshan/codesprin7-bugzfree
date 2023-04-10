@@ -53,6 +53,18 @@ class _EventPublish1State extends State<EventPublish1> {
                 ),
               ],
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 60.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: const Color(0xff142867),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                ),
+                onPressed: () {},
+                child: const Text('Next'),
+              ),
+            ),
           ],
         ),
       ),
