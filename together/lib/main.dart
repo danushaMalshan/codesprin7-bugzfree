@@ -12,6 +12,10 @@ import 'package:together/screens/publish_event.dart';
 import 'package:together/screens/select_category.dart';
 import 'package:together/screens/auth/firstscreen.dart';
 import 'package:together/screens/all_messages.dart';
+import 'package:together/screens/pending_reminders.dart';
+import 'package:together/screens/reminders.dart';
+import 'package:together/screens/publish_event/event_name.dart';
+import 'package:together/screens/publish_event/ticket_details.dart';
 import '/screens/home_screen.dart';
 
 void main() {
@@ -39,17 +43,35 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         fontFamily: 'Poppins',
       ),
-      builder: (context, child) => ResponsiveWrapper.builder(child,
-          maxWidth: 1200,
-          minWidth: 480,
-          defaultScale: true,
-          breakpoints: [
-            const ResponsiveBreakpoint.resize(480, name: MOBILE),
-            const ResponsiveBreakpoint.autoScale(800, name: TABLET),
-            const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-          ],
-          background: Container(color: const Color(0xFFF5F5F5))),
-      home: CustomNavigationBar(index: 2),
+
+      builder: (context, child) => ResponsiveWrapper.builder(
+        child,
+        maxWidth: 1200,
+        minWidth: 480,
+        defaultScale: true,
+        breakpoints: [
+          const ResponsiveBreakpoint.resize(480, name: MOBILE),
+          const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+        ],
+        background: Container(
+          color: const Color(0xFFF5F5F5),
+        ),
+      ),
+      home: TicketDetails(),
+
+      // builder: (context, child) => ResponsiveWrapper.builder(child,
+      //     maxWidth: 1200,
+      //     minWidth: 480,
+      //     defaultScale: true,
+      //     breakpoints: [
+      //       const ResponsiveBreakpoint.resize(480, name: MOBILE),
+      //       const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+      //       const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+      //     ],
+      //     background: Container(color: const Color(0xFFF5F5F5))),
+      // home: HomeScreen(),
+
     );
   }
 }
