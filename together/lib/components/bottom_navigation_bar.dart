@@ -6,6 +6,7 @@ import 'package:together/screens/all_messages.dart';
 import 'package:together/screens/event_details.dart';
 import 'package:together/screens/find_location.dart';
 import 'package:together/screens/home_screen.dart';
+import 'package:together/screens/reminders.dart';
 import 'package:together/screens/select_category.dart';
 import 'package:together/screens/user_profile.dart';
 
@@ -26,7 +27,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       UserProfileScreen(),
       HomeScreen(),
       FindLocationScreen(),
-      SelectCategoryScreen()
+      Reminders()
     ];
   }
 
