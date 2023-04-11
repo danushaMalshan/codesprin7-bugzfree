@@ -15,185 +15,199 @@ class _PendingRemindersState extends State<PendingReminders> {
       appBar: myAppBar(),
       body: SafeArea(
         child: SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: ListView(
-            children: <Widget>[
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
               Container(
                 margin: const EdgeInsets.only(
-                    left: 10.0, top: 20.0, right: 10.0, bottom: 0.0),
+                    left: 10.0, top: 20.0, right: 10.0, bottom: 20.0),
                 child: Text(
                   'Pending Reminders',
                   textAlign: TextAlign.center,
                   style: messagePreviewTextStyle(),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(width: 2),
-                ),
-                child: Column(
+              Expanded(
+                child: ListView(
                   children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        'Bentota Beach Fiesta',
-                        style: forEventName(),
-                      ),
-                      subtitle: Text(
-                        'Will be reminded on Monday',
-                        style: forEventSub(),
-                      ),
-                    ),
-                    const Divider(
-                      color: Color(0xff142867),
-                      thickness: 2.0,
-                    ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(width: 2),
+                      ),
+                      child: Column(
                         children: <Widget>[
-                          pendingReminderIcons(const Icon(Icons.delete),
-                              'Remove from Pending Reminders'),
-                          pendingReminderIcons(
-                              const Icon(Icons.add_circle), 'Add to Reminders Now'),
-                          pendingReminderIcons(const Icon(Icons.arrow_circle_right),
-                              'Go to Event Details'),
+                          ListTile(
+                            title: Text(
+                              'Bentota Beach Fiesta',
+                              style: forEventName(),
+                            ),
+                            subtitle: Text(
+                              'Will be reminded on Monday',
+                              style: forEventSub(),
+                            ),
+                          ),
+                          const Divider(
+                            color: Color(0xff142867),
+                            thickness: 2.0,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                pendingReminderIcons(const Icon(Icons.delete),
+                                    'Remove from Pending Reminders'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.add_circle),
+                                    'Add to Reminders Now'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.arrow_circle_right),
+                                    'Go to Event Details'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(width: 2),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        'Bentota Beach Fiesta',
-                        style: forEventName(),
-                      ),
-                      subtitle: Text(
-                        'Will be reminded on Monday',
-                        style: forEventSub(),
-                      ),
-                    ),
-                    const Divider(
-                      color: Color(0xff142867),
-                      thickness: 2.0,
-                    ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(width: 2),
+                      ),
+                      child: Column(
                         children: <Widget>[
-                          pendingReminderIcons(const Icon(Icons.delete),
-                              'Remove from Pending Reminders'),
-                          pendingReminderIcons(
-                              const Icon(Icons.add_circle), 'Add to Reminders Now'),
-                          pendingReminderIcons(const Icon(Icons.arrow_circle_right),
-                              'Go to Event Details'),
+                          ListTile(
+                            title: Text(
+                              'Bentota Beach Fiesta',
+                              style: forEventName(),
+                            ),
+                            subtitle: Text(
+                              'Will be reminded on Monday',
+                              style: forEventSub(),
+                            ),
+                          ),
+                          const Divider(
+                            color: Color(0xff142867),
+                            thickness: 2.0,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                pendingReminderIcons(const Icon(Icons.delete),
+                                    'Remove from Pending Reminders'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.add_circle),
+                                    'Add to Reminders Now'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.arrow_circle_right),
+                                    'Go to Event Details'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(width: 2),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        'Bentota Beach Fiesta',
-                        style: forEventName(),
-                      ),
-                      subtitle: Text(
-                        'Will be reminded on Monday',
-                        style: forEventSub(),
-                      ),
-                    ),
-                    const Divider(
-                      color: Color(0xff142867),
-                      thickness: 2.0,
-                    ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(width: 2),
+                      ),
+                      child: Column(
                         children: <Widget>[
-                          pendingReminderIcons(const Icon(Icons.delete),
-                              'Remove from Pending Reminders'),
-                          pendingReminderIcons(
-                              const Icon(Icons.add_circle), 'Add to Reminders Now'),
-                          pendingReminderIcons(const Icon(Icons.arrow_circle_right),
-                              'Go to Event Details'),
+                          ListTile(
+                            title: Text(
+                              'Bentota Beach Fiesta',
+                              style: forEventName(),
+                            ),
+                            subtitle: Text(
+                              'Will be reminded on Monday',
+                              style: forEventSub(),
+                            ),
+                          ),
+                          const Divider(
+                            color: Color(0xff142867),
+                            thickness: 2.0,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                pendingReminderIcons(const Icon(Icons.delete),
+                                    'Remove from Pending Reminders'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.add_circle),
+                                    'Add to Reminders Now'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.arrow_circle_right),
+                                    'Go to Event Details'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(width: 2),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        'Bentota Beach Fiesta',
-                        style: forEventName(),
-                      ),
-                      subtitle: Text(
-                        'Will be reminded on Monday',
-                        style: forEventSub(),
-                      ),
-                    ),
-                    const Divider(
-                      color: Color(0xff142867),
-                      thickness: 2.0,
-                    ),
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(width: 2),
+                      ),
+                      child: Column(
                         children: <Widget>[
-                          pendingReminderIcons(const Icon(Icons.delete),
-                              'Remove from Pending Reminders'),
-                          pendingReminderIcons(
-                              const Icon(Icons.add_circle), 'Add to Reminders Now'),
-                          pendingReminderIcons(const Icon(Icons.arrow_circle_right),
-                              'Go to Event Details'),
+                          ListTile(
+                            title: Text(
+                              'Bentota Beach Fiesta',
+                              style: forEventName(),
+                            ),
+                            subtitle: Text(
+                              'Will be reminded on Monday',
+                              style: forEventSub(),
+                            ),
+                          ),
+                          const Divider(
+                            color: Color(0xff142867),
+                            thickness: 2.0,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                pendingReminderIcons(const Icon(Icons.delete),
+                                    'Remove from Pending Reminders'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.add_circle),
+                                    'Add to Reminders Now'),
+                                pendingReminderIcons(
+                                    const Icon(Icons.arrow_circle_right),
+                                    'Go to Event Details'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -210,7 +224,7 @@ class _PendingRemindersState extends State<PendingReminders> {
 
 TextStyle messagePreviewTextStyle() {
   return const TextStyle(
-    fontSize: 25.0,
+    fontSize: 20.0,
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );

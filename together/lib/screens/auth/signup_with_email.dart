@@ -4,17 +4,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+
+class SignUpWithEmail extends StatefulWidget {
+  const SignUpWithEmail({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpWithEmail> createState() => _SignUpWithEmailState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
- 
- 
-  
+class _SignUpWithEmailState extends State<SignUpWithEmail> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController _ctrlEmail = TextEditingController();
+  TextEditingController _ctrlPassword = TextEditingController();
+
+  Future<void> _signUpWithEmailPassword() async {
+    try {
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+          email: _ctrlEmail.text, password: _ctrlPassword.text);
+    } on FirebaseException catch (e) {
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,23 +44,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AppLogo(width),
-                    CustomSignupButton(
-                        Colors.black87,
-                        'assets/icons/apple_logo.png',
-                        'Continue with Apple',
-                        Colors.white),
-                    CustomSignupButton(
-                        Colors.blue.shade600,
-                        'assets/icons/facebook.png',
-                        'Continue with Facebook',
-                        Colors.white),
-                    CustomSignupButton(
-                      Colors.grey.withOpacity(0.5),
-                      'assets/icons/google.png',
-                      'Continue with Google',
-                      Color.fromARGB(255, 1, 121, 226),
-                    ),
-                    OrText(),
                     SignInWithEmailPassword(width),
                     LoginButton(width),
                     ForgotPasswordText()
@@ -89,9 +81,11 @@ class _SignInScreenState extends State<SignInScreen> {
         height: 60,
         width: width - 60,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            _signUpWithEmailPassword();
+          },
           child: Text(
-            'Log In',
+            'Sign Up',
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
@@ -120,6 +114,7 @@ class _SignInScreenState extends State<SignInScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: TextField(
+              controller: _ctrlEmail,
               cursorColor: Colors.grey.withOpacity(0.4),
               style: TextStyle(
                   color: Colors.grey,
@@ -142,6 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: TextField(
+              controller: _ctrlPassword,
               cursorColor: Colors.grey.withOpacity(0.4),
               style: TextStyle(
                   color: Colors.grey,
@@ -175,30 +171,33 @@ class _SignInScreenState extends State<SignInScreen> {
       Color color, String image, String title, Color txtColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-      child: Container(
-        height: 60,
-        child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          tileColor: color,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              title,
-              style: TextStyle(
-                  color: txtColor, fontWeight: FontWeight.w500, fontSize: 20),
-              textAlign: TextAlign.center,
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          height: 60,
+          child: ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-          trailing: Container(
-            height: 32,
-            width: 32,
-          ),
-          leading: Image.asset(
-            image,
-            height: 32,
-            width: 32,
+            tileColor: color,
+            title: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                title,
+                style: TextStyle(
+                    color: txtColor, fontWeight: FontWeight.w500, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            trailing: Container(
+              height: 32,
+              width: 32,
+            ),
+            leading: Image.asset(
+              image,
+              height: 32,
+              width: 32,
+            ),
           ),
         ),
       ),
