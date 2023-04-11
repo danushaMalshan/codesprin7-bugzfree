@@ -36,36 +36,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: const Color(0xFF142867),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            iconTheme: IconThemeData(
-              color: Color(0xFF142867),
-            ),
-            elevation: 2,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: const Color(0xFF142867),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: Color(0xFF142867),
           ),
-          scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-          fontFamily: 'Poppins',
+          elevation: 2,
         ),
-
-        builder: (context, child) => ResponsiveWrapper.builder(
-              child,
-              maxWidth: 1200,
-              minWidth: 480,
-              defaultScale: true,
-              breakpoints: [
-                const ResponsiveBreakpoint.resize(480, name: MOBILE),
-                const ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-              ],
-              background: Container(
-                color: const Color(0xFFF5F5F5),
-              ),
-            ),
-        home: SignUpWithEmail());
-
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        fontFamily: 'Poppins',
+      ),
+      builder: (context, child) => ResponsiveWrapper.builder(
+        child,
+        maxWidth: 1200,
+        minWidth: 480,
+        defaultScale: true,
+        breakpoints: [
+          const ResponsiveBreakpoint.resize(480, name: MOBILE),
+          const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+        ],
+        background: Container(
+          color: const Color(0xFFF5F5F5),
+        ),
+      ),
+      home: TicketDetails(),
+    );
   }
 }
