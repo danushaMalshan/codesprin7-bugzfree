@@ -17,6 +17,8 @@ import 'package:together/screens/auth/firstscreen.dart';
 import 'package:together/screens/all_messages.dart';
 import 'package:together/screens/pending_reminders.dart';
 import 'package:together/screens/reminders.dart';
+import 'package:together/screens/publish_event/event_name.dart';
+import 'package:together/screens/publish_event/ticket_details.dart';
 import '/screens/home_screen.dart';
 
 void main() async {
@@ -48,6 +50,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFFFFFFF),
           fontFamily: 'Poppins',
         ),
+
         builder: (context, child) => ResponsiveWrapper.builder(
               child,
               maxWidth: 1200,
@@ -63,5 +66,6 @@ class MyApp extends StatelessWidget {
               ),
             ),
         home: SignUpWithEmail());
+
   }
 }
