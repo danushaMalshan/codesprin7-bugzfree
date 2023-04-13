@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/firebase_options.dart';
+import 'package:together/global.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
 import 'package:together/screens/auth/signup_with_email.dart';
 import 'package:together/screens/category_events.dart';
 import 'package:together/screens/event_details.dart';
 import 'package:together/screens/find_location.dart';
+import 'package:together/screens/splash_screen.dart';
 import 'package:together/screens/user_details.dart';
 import 'package:together/screens/user_profile.dart';
 import 'package:together/screens/publish_event.dart';
@@ -63,8 +65,18 @@ class MyApp extends StatelessWidget {
         background: Container(
           color: const Color(0xFFF5F5F5),
         ),
-      ),
-      home: TicketDetails(),
+
+      ),scaffoldMessengerKey: snackbarKey,
+      initialRoute: '/',
+          routes: {
+            '/': (context) => SplashScreen(),
+            '/home': (context) => HomeScreen(),
+            '/login': (context) => SignInScreen(),
+             '/sign_up':(context) => SignUp(),
+              '/sign_up_with_email':(context) => SignUpWithEmail(),
+            
+          },
+
     );
   }
 }
