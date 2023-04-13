@@ -65,6 +65,7 @@ class MyApp extends StatelessWidget {
         background: Container(
           color: const Color(0xFFF5F5F5),
         ),
+
       ),scaffoldMessengerKey: snackbarKey,
       initialRoute: '/',
           routes: {
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
               '/sign_up_with_email':(context) => SignUpWithEmail(),
             
           },
+
     );
   }
 }
