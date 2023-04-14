@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -7,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:together/components/snack_bar.dart';
 
 class SignUpWithEmail extends StatefulWidget {
   const SignUpWithEmail({Key? key}) : super(key: key);
@@ -18,11 +23,20 @@ class SignUpWithEmail extends StatefulWidget {
 class _SignUpWithEmailState extends State<SignUpWithEmail> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  File? _image;
+  final _picker = ImagePicker();
+
   TextEditingController _ctrlEmail = TextEditingController();
   TextEditingController _ctrlPassword = TextEditingController();
   TextEditingController _ctrlAge = TextEditingController();
   TextEditingController _ctrlUsername = TextEditingController();
+
+  ShowSnackBar snackBar = ShowSnackBar();
+
   bool loading = false;
+
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _signUpWithEmailPassword() async {
@@ -30,26 +44,50 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       setState(() {
         loading = true;
       });
+
+      //
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
-          email: _ctrlEmail.text, password: _ctrlPassword.text);
+          email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
       if (credential != null) {
+        //add profile pic to firebase
+        if (_image != null) {
+          final ref =
+              _storage.ref().child('images/pro_pic/${_ctrlEmail.text.trim()}');
+          await ref.putFile(_image!);
+          final imageUrl = await ref.getDownloadURL();
+          await credential.user!.updatePhotoURL(imageUrl);
+        }
+
+        await credential.user!.updateDisplayName(_ctrlUsername.text);
+        
         await addUserData(credential);
+        await _auth.signInWithEmailAndPassword(
+            email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
+        _auth.authStateChanges().listen((User? user) {
+          if (user == null) {
+            Navigator.pushReplacementNamed(context, '/login');
+          } else {
+            Navigator.pushReplacementNamed(context, '/select_category');
+          }
+        });
       }
       setState(() {
         loading = false;
       });
     } on FirebaseException catch (e) {
-      _showSnackaBar(context, e.message.toString());
+      snackBar.showSnackaBar(context, e.message.toString());
       setState(() {
         loading = false;
       });
     } catch (e) {
-      _showSnackaBar(context, e.toString());
+      snackBar.showSnackaBar(context, e.toString());
       setState(() {
         loading = false;
       });
     }
   }
+
+  Future<void> _signInWithEmailPassword() async {}
 
   Future<void> addUserData(UserCredential credential) async {
     String userID = credential.user!.uid;
@@ -69,18 +107,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         _ctrlUsername.text.isNotEmpty);
   }
 
-  void _showSnackaBar(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        padding: EdgeInsets.symmetric(vertical: 20),
-        backgroundColor: Colors.red,
-        content: Text(
-          msg,
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
-          textAlign: TextAlign.center,
-        )));
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -98,7 +124,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  AppLogo(width),
+                  // AppLogo(width),
+                  ProfilePicture(),
                   SignInWithEmailPassword(width),
                   LoginButton(width),
                   ForgotPasswordText(),
@@ -108,6 +135,72 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget ProfilePicture() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(width: 5, color: Colors.grey.withOpacity(0.4)),
+            ),
+            child: Container(
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 65,
+                child: _image == null
+                    ? Icon(
+                        Icons.person_outline_sharp,
+                        size: 90,
+                        color: Colors.grey.withOpacity(0.4),
+                      )
+                    : Image.file(
+                        _image!,
+                        fit: BoxFit.cover,
+                        width: 150,
+                        height: 150,
+                      ),
+              ),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                // border:
+                //     Border.all(width: 5, color: Colors.grey.withOpacity(0.4)),
+              ),
+              height: 150,
+              width: 150,
+              clipBehavior: Clip.hardEdge,
+            ),
+          ),
+          Positioned(
+              bottom: 6,
+              right: 0,
+              child: GestureDetector(
+                onTap: () async {
+                  final pickedFile = await _picker.pickImage(
+                      source: ImageSource.gallery, imageQuality: 50);
+                  setState(() {
+                    _image = File(pickedFile!.path);
+                  });
+                },
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade300,
+                  radius: 20,
+                  child: Center(
+                      child: Icon(
+                    Icons.camera_alt_outlined,
+                    size: 24,
+                    color: Colors.white,
+                  )),
+                ),
+              ))
+        ],
       ),
     );
   }
@@ -170,7 +263,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             if (_validate()) {
               _signUpWithEmailPassword();
             } else {
-              _showSnackaBar(context, 'Fields Cannot be Empty');
+              snackBar.showSnackaBar(context, 'Fields Cannot be Empty');
             }
           },
           child: loading

@@ -1,9 +1,11 @@
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:together/components/snack_bar.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -13,6 +15,44 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  TextEditingController _ctrlEmail = TextEditingController();
+  TextEditingController _ctrlPassword = TextEditingController();
+
+  ShowSnackBar _snackBar = ShowSnackBar();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _loading = false;
+
+  Future<void> _signIn() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+      final _userCredential = await _auth.signInWithEmailAndPassword(
+          email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
+      if (_userCredential.user != null) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+      setState(() {
+        _loading = false;
+      });
+    } on FirebaseException catch (e) {
+      _snackBar.showSnackaBar(context, e.message.toString());
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+      _snackBar.showSnackaBar(context, e.toString());
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  bool _validate() {
+    return (_ctrlPassword.text.isNotEmpty && _ctrlEmail.text.isNotEmpty);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -63,31 +103,30 @@ class _SignInScreenState extends State<SignInScreen> {
 
   GestureDetector DontHaveAnAccountText(BuildContext context) {
     return GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/sign_up');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Don\'t have an account? ',
-                            style: TextStyle(
-                                color: Colors.blue.shade900, fontSize: 18),
-                          ),
-                          TextSpan(
-                            text: 'Sign Up',
-                            style: TextStyle(
-                                color: Colors.blue.shade900,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+      onTap: () {
+        Navigator.pushReplacementNamed(context, '/sign_up');
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15),
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Don\'t have an account? ',
+                style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+              ),
+              TextSpan(
+                text: 'Sign Up',
+                style: TextStyle(
+                    color: Colors.blue.shade900,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Padding ForgotPasswordText() {
@@ -114,12 +153,24 @@ class _SignInScreenState extends State<SignInScreen> {
         height: 60,
         width: width - 60,
         child: ElevatedButton(
-          onPressed: () {},
-          child: Text(
-            'Log In',
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
-          ),
+          onPressed: () {
+            if (_validate()) {
+              _signIn();
+            } else {
+              _snackBar.showSnackaBar(context, 'Fields Cannot be Empty');
+            }
+          },
+          child: _loading
+              ? Center(
+                  child: SpinKitWave(color: Colors.white, size: 25),
+                )
+              : Text(
+                  'Log In',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
           style: ElevatedButton.styleFrom(
             primary: Colors.blue.shade900,
             shape: RoundedRectangleBorder(
@@ -144,7 +195,8 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 20),
-            child: TextField(
+            child: TextFormField(
+              controller: _ctrlEmail,
               cursorColor: Colors.grey.withOpacity(0.4),
               style: TextStyle(
                   color: Colors.grey,
@@ -166,7 +218,9 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
-            child: TextField(
+            child: TextFormField(
+              obscureText: true,
+              controller: _ctrlPassword,
               cursorColor: Colors.grey.withOpacity(0.4),
               style: TextStyle(
                   color: Colors.grey,

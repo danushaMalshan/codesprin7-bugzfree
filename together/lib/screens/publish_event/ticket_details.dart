@@ -9,31 +9,9 @@ class TicketDetails extends StatefulWidget {
 }
 
 class _TicketDetailsState extends State<TicketDetails> {
+  int priceHolders = 1;
   @override
   Widget build(BuildContext context) {
-    //List was implemented
-    List<Widget> fields = [
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            width: 1.0,
-          ),
-        ),
-        child: Column(
-          children: <Widget>[
-            textField(Icons.local_activity, 'Status', 1),
-            const SizedBox(
-              height: 10.0,
-            ),
-            textField(Icons.local_atm, 'Price', 1),
-          ],
-        ),
-      ),
-    ];
-
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: myAppBar(),
@@ -51,57 +29,56 @@ class _TicketDetailsState extends State<TicketDetails> {
               ),
             ),
             Expanded(
-              child: ListView(
-                children: <Widget>[
-                  Column(
-                    children: fields,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 50.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          fields.add(
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10.0),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                border: Border.all(
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  textField(Icons.local_activity, 'Status', 1),
-                                  const SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  textField(Icons.local_atm, 'Price', 1),
-                                ],
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color(0xff142867),
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      ),
-                      child: const Text('Add field'),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                ],
-              ),
+              child: ListView.builder(
+                  itemCount: priceHolders,
+                  itemBuilder: (context, index) {
+                    return PriceHolder();
+                  }),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: SizedBox(
+                height: 40,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF142867),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      priceHolders += 1;
+                    });
+                  },
+                  child: Text(
+                    'Add more Tickets',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  Container PriceHolder() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          width: 1.0,
+        ),
+      ),
+      child: Column(
+        children: <Widget>[
+          textField(Icons.local_activity, 'Status', 1),
+          const SizedBox(
+            height: 10.0,
+          ),
+          textField(Icons.local_atm, 'Price', 1),
+        ],
       ),
     );
   }
