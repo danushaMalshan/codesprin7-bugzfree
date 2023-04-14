@@ -65,16 +65,18 @@ class MyApp extends StatelessWidget {
         background: Container(
           color: const Color(0xFFF5F5F5),
         ),
-      ),scaffoldMessengerKey: snackbarKey,
-      initialRoute: '/',
-          routes: {
-            '/': (context) => SplashScreen(),
-            '/home': (context) => HomeScreen(),
-            '/login': (context) => SignInScreen(),
-             '/sign_up':(context) => SignUp(),
-              '/sign_up_with_email':(context) => SignUpWithEmail(),
-            
-          },
+      ),
+      scaffoldMessengerKey: snackbarKey,
+      home: TicketDetails(),
+      // initialRoute: '/',
+      // routes: {
+      //   '/': (context) => SplashScreen(),
+      //   '/home': (context) => CustomNavigationBar(index: 2),
+      //   '/login': (context) => SignInScreen(),
+      //   '/sign_up': (context) => SignUp(),
+      //   '/sign_up_with_email': (context) => SignUpWithEmail(),
+      //   '/select_category': (context) => SelectCategoryScreen(),
+      // },
     );
   }
 }
