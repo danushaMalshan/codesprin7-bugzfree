@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
@@ -13,7 +14,7 @@ class UserDetailsScreen extends StatefulWidget {
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   // PlatformFile? pickedFile;
-
+// DocumentSnapshot _username= Firestore.instance.colloection('users').doc('81mzPQlfl3PspsfYCQ0SowcNxF83').get();
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
@@ -73,7 +74,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(30.0),
-                            border: Border.all(width: 2.0, color: Colors.amber),
+                            border: Border.all(width: 2.0, color: Colors.black),
                           ),
                           height: 50.0,
                           width: 50.0,
@@ -210,6 +211,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     );
   }
 }
+
 
 Container myListTile(String listTitle) {
   return Container(
