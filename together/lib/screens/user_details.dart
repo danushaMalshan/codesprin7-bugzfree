@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
@@ -13,21 +12,20 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
-  // PlatformFile? pickedFile;
-// DocumentSnapshot _username= Firestore.instance.colloection('users').doc('81mzPQlfl3PspsfYCQ0SowcNxF83').get();
+  PlatformFile? pickedFile;
+
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  // selectFile()async{
-  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
-  //
-  //   if (result != null) {
-  //     File file = File(result.files.single.path);
-  //   } else {
-  //     // User canceled the picker
-  //   }
+  selectFile()async{
+    final file=await FilePicker.platform.pickFiles();
+    if (file==null)return;
+    setState(() {
+      pickedFile=file.files.first;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +67,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         child: Container(
                           child: IconButton(
                             icon: Icon(Icons.add_photo_alternate),
-                            onPressed: (){},
+                            onPressed: selectFile(),
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(30.0),
-                            border: Border.all(width: 2.0, color: Colors.black),
+                            border: Border.all(width: 2.0, color: Colors.amber),
                           ),
                           height: 50.0,
                           width: 50.0,
@@ -211,7 +209,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     );
   }
 }
-
 
 Container myListTile(String listTitle) {
   return Container(
