@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       scaffoldMessengerKey: snackbarKey,
-      home: TicketDetails(),
+      home: UserDetailsScreen(),
       // initialRoute: '/',
       // routes: {
       //   '/': (context) => SplashScreen(),
