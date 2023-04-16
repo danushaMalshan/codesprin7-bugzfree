@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class CategoryEventsScreen extends StatefulWidget {
   const CategoryEventsScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: Stack(children: [
         BannerImage(width, height),
         Positioned(
@@ -94,7 +95,7 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          Color(0xFF142867).withOpacity(0.8),
+                          AppColor.primaryColor.withOpacity(0.8),
                           Colors.white.withOpacity(0.1),
                         ],
                       ),
@@ -159,31 +160,31 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Color(0xFF142867), width: 1),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: 1),
           ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(color: Color(0xFF142867), width: 1)),
+              borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(color: Color(0xFF142867), width: 1)),
+              borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
           fillColor: Colors.white.withOpacity(0.7),
           filled: true,
           contentPadding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
           suffixIcon: Icon(
             Icons.tune,
-            color: Color(0xFF142867).withOpacity(0.4),
+            color: AppColor.primaryColor.withOpacity(0.4),
             size: 30,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Color(0xFF142867).withOpacity(0.4),
+            color: AppColor.primaryColor.withOpacity(0.4),
             size: 30,
           ),
           hintText: 'Search any Event',
           hintStyle: TextStyle(
             fontSize: 20,
-            color: Color(0xFF142867).withOpacity(0.4),
+            color: AppColor.primaryColor.withOpacity(0.4),
           ),
         ),
         cursorColor: Colors.black,

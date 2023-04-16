@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/utils/colors.dart';
 import '../components/appbar.dart';
 
 class myAllMessages extends StatefulWidget {
@@ -13,7 +14,7 @@ class _myAllMessagesState extends State<myAllMessages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -39,7 +40,7 @@ TextStyle homeTextStyle() {
   return const TextStyle(
     fontSize: 30.0,
     fontWeight: FontWeight.bold,
-    color: Color(0xff142867),
+    color: AppColor.primaryColor,
   );
 }
 
@@ -47,7 +48,7 @@ TextStyle messagePreviewTextStyle() {
   return const TextStyle(
     fontSize: 25.0,
     fontWeight: FontWeight.bold,
-    color: Color(0xff142867),
+    color: AppColor.primaryColor,
   );
 }
 
@@ -58,7 +59,7 @@ Widget messagePreview(String organizerName, String date, String time) {
     decoration: BoxDecoration(
       border: Border.all(
         width: 2.0,
-        color: const Color(0xff142867),
+        color:  AppColor.primaryColor,
       ),
       borderRadius: BorderRadius.circular(20.0),
     ),
@@ -66,7 +67,7 @@ Widget messagePreview(String organizerName, String date, String time) {
       leading: const Icon(
         Icons.person,
         size: 50,
-        color: Color(0xff142867),
+        color: AppColor.primaryColor,
       ),
       title: Text(organizerName,style: messagePreviewTextStyle(),),
       subtitle: Text(date),

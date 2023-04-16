@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:together/utils/colors.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({Key? key}) : super(key: key);
@@ -13,18 +16,23 @@ class UserDetailsScreen extends StatefulWidget {
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   PlatformFile? pickedFile;
-
+  File? _image;
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  selectFile()async{
-    final file=await FilePicker.platform.pickFiles();
-    if (file==null)return;
-    setState(() {
-      pickedFile=file.files.first;
-    });
+  selectFile() async {
+    try {
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null) {
+        File pickedFile = File(result.files.single.path ?? '');
+        setState(() {
+          _image = pickedFile;
+        });
+      }
+    } catch (e) {}
   }
 
   @override
@@ -33,7 +41,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: SafeArea(
         child: Container(
           width: width,
@@ -67,7 +75,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         child: Container(
                           child: IconButton(
                             icon: Icon(Icons.add_photo_alternate),
-                            onPressed: selectFile(),
+                            onPressed: () async {
+                              selectFile();
+                            },
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -97,14 +107,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: const BorderSide(
                               width: 2,
-                              color: Color(0xff142867),
+                              color: AppColor.primaryColor,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: const BorderSide(
                               width: 2,
-                              color: Color(0xff142867),
+                              color: AppColor.primaryColor,
                             ),
                           ),
                           hintText: 'Email',
@@ -128,14 +138,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: const BorderSide(
                               width: 2,
-                              color: Color(0xff142867),
+                              color: AppColor.primaryColor,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: const BorderSide(
                               width: 2,
-                              color: Color(0xff142867),
+                              color: AppColor.primaryColor,
                             ),
                           ),
                           hintText: 'Password',
@@ -153,8 +163,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       onPressed: () {},
                       child: Text('Done'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0,horizontal: 40.0),
-                        primary: const Color(0xff142867),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 40.0),
+                        primary:  AppColor.primaryColor,
                       ),
                     ),
                   ],

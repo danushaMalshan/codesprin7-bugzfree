@@ -5,7 +5,10 @@ import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/screens/auth/signin.dart';
+import 'package:together/screens/publish_event.dart';
+import 'package:together/screens/publish_event/publish_event_first_screen.dart';
 import 'package:together/screens/user_details.dart';
+import 'package:together/utils/colors.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
@@ -48,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: myAppBar(),
+        appBar: myAppBar(context, true),
         body: loading
             ? Center(
                 child: SpinKitWave(),
@@ -87,9 +90,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 Text(user?.email ?? 'Undefined'),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary: const Color(0xff142867),
+                                    primary: AppColor.primaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PublishEventFirstScreen()));
+                                  },
                                   child: const Text('Publish an Event'),
                                 ),
                               ],

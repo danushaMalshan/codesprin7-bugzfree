@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       
-      appBar: myAppBar(),
+      appBar: myAppBar(context,false),
       body: SizedBox(
         width: width,
         height: height,
@@ -103,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Color(0xFF142867).withOpacity(0.8),
+                              AppColor.primaryColor.withOpacity(0.8),
                               Colors.white.withOpacity(0.1),
                             ],
                           ),
@@ -183,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Color(0xFF142867).withOpacity(0.8),
+                              AppColor.primaryColor.withOpacity(0.8),
                               Colors.white.withOpacity(0.1),
                             ],
                           ),
@@ -262,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Color(0xFF142867).withOpacity(0.8),
+                              AppColor.primaryColor.withOpacity(0.8),
                               Colors.white.withOpacity(0.1),
                             ],
                           ),
@@ -300,31 +302,31 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Color(0xFF142867), width: 1),
+          borderSide: BorderSide(color: AppColor.primaryColor, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Color(0xFF142867), width: 1)),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Color(0xFF142867), width: 1)),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
         fillColor: Colors.white.withOpacity(0.7),
         filled: true,
         contentPadding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
         suffixIcon: Icon(
           Icons.tune,
-          color: Color(0xFF142867).withOpacity(0.4),
+          color: AppColor.primaryColor.withOpacity(0.4),
           size: 30,
         ),
         prefixIcon: Icon(
           Icons.search,
-          color: Color(0xFF142867).withOpacity(0.4),
+          color: AppColor.primaryColor.withOpacity(0.4),
           size: 30,
         ),
         hintText: 'Search any Event',
         hintStyle: TextStyle(
           fontSize: 20,
-          color: Color(0xFF142867).withOpacity(0.4),
+          color: AppColor.primaryColor.withOpacity(0.4),
         ),
       ),
       cursorColor: Colors.black,
@@ -334,27 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //AppBar goes here...
 
-PreferredSize myAppBar() {
-  return PreferredSize(
-    preferredSize: const Size.fromHeight(60),
-    child: AppBar(
-      backgroundColor: Colors.white,
-      title: const Align(
-        alignment: Alignment.center,
-        child: Image(
-          image: AssetImage(
-            'assets/images/Logo & Name__1.png',
-          ),
-          height: 40,
-          // width: 140,
-        ),
-      ),
-      actions: const [
-        SizedBox(width: 50),
-      ],
-    ),
-  );
-}
+
 
 //TextStyles for home page goes here...
 

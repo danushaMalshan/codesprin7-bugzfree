@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class PublishEventScreen extends StatelessWidget {
   const PublishEventScreen({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class PublishEventScreen extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -44,7 +45,7 @@ class PublishEventScreen extends StatelessWidget {
           ),
           icon: Icon(
             icon,
-            color: Color(0xff142867),
+            color: AppColor.primaryColor,
           ),
         ),
       ),

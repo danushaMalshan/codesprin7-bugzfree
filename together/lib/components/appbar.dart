@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
-PreferredSize myAppBar() {
+PreferredSize myAppBar(BuildContext context, bool isBackButtonAvailable) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(60),
     child: AppBar(
       backgroundColor: Colors.white,
-      leading: const Align(
-        alignment: Alignment.center,
-        child: Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.black,
-        ),
-      ),
+      leading: isBackButtonAvailable
+          ? Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.black,
+                  )))
+          : Container(),
       title: const Align(
         alignment: Alignment.center,
         child: Image(

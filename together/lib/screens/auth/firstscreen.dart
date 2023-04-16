@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:together/utils/colors.dart';
 
 class firstScreen extends StatefulWidget {
   const firstScreen({Key? key}) : super(key: key);
@@ -32,11 +33,11 @@ class _firstScreenState extends State<firstScreen> {
           loginButtons(
             'Sign up',
             const Color(0xffd9d9d9),
-            const Color(0xff142867),
+            AppColor.primaryColor,
           ),
           loginButtons(
             'Log in',
-            const Color(0xff142867),
+             AppColor.primaryColor,
             const Color(0xffd9d9d9),
           ),
         ],

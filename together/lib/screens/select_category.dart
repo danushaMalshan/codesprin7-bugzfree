@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
   const SelectCategoryScreen({Key? key}) : super(key: key);
@@ -115,7 +116,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   width: 80,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF142867),
+                      primary: AppColor.primaryColor,
                     ),
                     onPressed: ()async {await _addSelectedCategories();},
                     child: Text(
@@ -138,7 +139,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 child: Text(
                   'SELECT CATEGORIES',
                   style: TextStyle(
-                      color: Color(0xFF142867),
+                      color: AppColor.primaryColor,
                       fontWeight: FontWeight.w600,
                       fontSize: 25),
                 ),
@@ -218,7 +219,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   colors: [
                     tapped
                         ? Colors.black.withOpacity(0.8)
-                        : Color(0xFF142867).withOpacity(0.8),
+                        : AppColor.primaryColor.withOpacity(0.8),
                     Colors.white.withOpacity(0.1),
                   ],
                 ),

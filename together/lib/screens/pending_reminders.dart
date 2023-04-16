@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
+import 'package:together/utils/colors.dart';
 
 class PendingReminders extends StatefulWidget {
   const PendingReminders({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class _PendingRemindersState extends State<PendingReminders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -54,7 +55,7 @@ class _PendingRemindersState extends State<PendingReminders> {
                             ),
                           ),
                           const Divider(
-                            color: Color(0xff142867),
+                            color: AppColor.primaryColor,
                             thickness: 2.0,
                           ),
                           Container(
@@ -99,7 +100,7 @@ class _PendingRemindersState extends State<PendingReminders> {
                             ),
                           ),
                           const Divider(
-                            color: Color(0xff142867),
+                            color: AppColor.primaryColor,
                             thickness: 2.0,
                           ),
                           Container(
@@ -144,7 +145,7 @@ class _PendingRemindersState extends State<PendingReminders> {
                             ),
                           ),
                           const Divider(
-                            color: Color(0xff142867),
+                            color: AppColor.primaryColor,
                             thickness: 2.0,
                           ),
                           Container(
@@ -189,7 +190,7 @@ class _PendingRemindersState extends State<PendingReminders> {
                             ),
                           ),
                           const Divider(
-                            color: Color(0xff142867),
+                            color: AppColor.primaryColor,
                             thickness: 2.0,
                           ),
                           Container(
@@ -234,7 +235,7 @@ TextStyle forEventName() {
   return const TextStyle(
     fontSize: 27.0,
     // fontWeight: FontWeight.bold,
-    color: Color(0xff142867),
+    color: AppColor.primaryColor,
   );
 }
 
@@ -242,7 +243,7 @@ TextStyle forEventSub() {
   return const TextStyle(
     fontSize: 17.0,
     // fontWeight: FontWeight.bold,
-    color: Color(0xff142867),
+    color: AppColor.primaryColor,
   );
 }
 
@@ -252,6 +253,6 @@ Widget pendingReminderIcons(Icon remIcon, String remToolTip) {
     onPressed: () {},
     tooltip: remToolTip,
     iconSize: 45.0,
-    // color: Color(0xff142867),
+    // color: AppColor.primaryColor,
   );
 }
