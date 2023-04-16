@@ -9,6 +9,7 @@ import 'package:together/screens/home_screen.dart';
 import 'package:together/screens/reminders.dart';
 import 'package:together/screens/select_category.dart';
 import 'package:together/screens/user_profile.dart';
+import 'package:together/utils/colors.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   CustomNavigationBar({Key? key, required this.index}) : super(key: key);
@@ -26,7 +27,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       myAllMessages(),
       UserProfileScreen(),
       HomeScreen(),
-      FindLocationScreen(),
+      MapSample(),
       Reminders()
     ];
   }
@@ -39,7 +40,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           size: 30,
         ),
         title: ("Chats"),
-        activeColorPrimary: Color(0xFF142867),
+        activeColorPrimary: AppColor.primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
@@ -48,7 +49,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           size: 30,
         ),
         title: ("Profile"),
-        activeColorPrimary: Color(0xFF142867),
+        activeColorPrimary: AppColor.primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
@@ -57,7 +58,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           size: 30,
         ),
         title: ("Home"),
-        activeColorPrimary: Color(0xFF142867),
+        activeColorPrimary: AppColor.primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
@@ -66,7 +67,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           size: 30,
         ),
         title: ("Search"),
-        activeColorPrimary: Color(0xFF142867),
+        activeColorPrimary: AppColor.primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
@@ -75,7 +76,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           size: 30,
         ),
         title: ("Reminders"),
-        activeColorPrimary: Color(0xFF142867),
+        activeColorPrimary: AppColor.primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
     ];

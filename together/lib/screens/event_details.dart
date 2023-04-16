@@ -7,6 +7,7 @@ import 'package:together/components/appbar.dart';
 import 'dart:async';
 
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class EventDetailsScreen extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       
-      appBar: myAppBar(),
+      appBar: myAppBar(context,true),
       body: SizedBox(
         width: width,
         height: height,
@@ -94,7 +95,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                       fontSize: 18),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF142867),
+                  primary: AppColor.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -260,7 +261,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                         fontSize: 18),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF142867),
+                    primary: AppColor.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -280,7 +281,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                   child: Text(
                     'Contact Organizer',
                     style: TextStyle(
-                        color: Color(0xFF142867),
+                        color: AppColor.primaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 18),
                   ),
@@ -288,7 +289,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Color(0xFF142867), width: 2)),
+                        side: BorderSide(color: AppColor.primaryColor, width: 2)),
                   ),
                 ),
               ),
@@ -322,11 +323,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         children: [
           TabBar(
             indicator: BoxDecoration(
-              color: Color(0xFF142867),
+              color: AppColor.primaryColor,
               // Set selected tab color here
             ),
-            // labelStyle: TextStyle(color: Color(0xFF142867)),
-            unselectedLabelColor: Color(0xFF142867),
+            // labelStyle: TextStyle(color: AppColor.primaryColor),
+            unselectedLabelColor: AppColor.primaryColor,
             controller: _tabController,
             labelPadding: EdgeInsets.symmetric(vertical: 15),
             labelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -350,7 +351,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           ),
           Expanded(
             child: Container(
-              color: Color(0xFF142867),
+              color: AppColor.primaryColor,
               child: TabBarView(
                 controller: _tabController,
                 children: [

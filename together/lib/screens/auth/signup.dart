@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:together/utils/colors.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class _SignUpState extends State<SignUp> {
                   loginButtons(
                     "Continue with Google",
                     "assets/icons/google.png",
-                    const Color(0xff142867),
+                     AppColor.primaryColor,
                     const Color(0xffd9d9d9),
                   ),
                   SignUpWithEmail(context),
@@ -80,7 +81,7 @@ class _SignUpState extends State<SignUp> {
           child: Text(
             "Continue with Email",
             style: TextStyle(
-              color: Color(0xff142867),
+              color: AppColor.primaryColor,
               fontSize: 20,
             ),
           ),

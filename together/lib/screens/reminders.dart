@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:together/components/appbar.dart';
+import 'package:together/utils/colors.dart';
 
 class Reminders extends StatefulWidget {
   const Reminders({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class _RemindersState extends State<Reminders> {
     //                       title: Text('Bentota Beach Fiesta'),
     //                       trailing: Icon(
     //                         Icons.delete,
-    //                         color: Color(0xff142867),
+    //                         color: AppColor.primaryColor,
     //                       ),
     //                     ),
     //                     Row(
@@ -75,7 +76,7 @@ class _RemindersState extends State<Reminders> {
 
     return Scaffold(
 
-        appBar: myAppBar(),
+        appBar: myAppBar(context,true),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -116,8 +117,8 @@ class _RemindersState extends State<Reminders> {
       height: 130,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Color(0xFF142867).withOpacity(0.1),
-          border: Border.all(width: 2, color: Color(0xFF142867))),
+          color: AppColor.primaryColor.withOpacity(0.1),
+          border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: Column(
         children: [
           Expanded(
@@ -128,7 +129,7 @@ class _RemindersState extends State<Reminders> {
                 children: [
                   Text(
                     'Bentota Beach Fiesta',
-                    style: TextStyle(fontSize: 20, color: Color(0xFF142867)),
+                    style: TextStyle(fontSize: 20, color: AppColor.primaryColor),
                   ),
                   Spacer(),
                   Icon(Icons.delete)
@@ -173,7 +174,7 @@ class _RemindersState extends State<Reminders> {
                             Icon(
                               Icons.av_timer_outlined,
                               size: 35,
-                              color: Color(0xFF142867),
+                              color: AppColor.primaryColor,
                             ),
                             SizedBox(
                               width: 5,
@@ -183,7 +184,7 @@ class _RemindersState extends State<Reminders> {
                               style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF142867)),
+                                  color: AppColor.primaryColor),
                             ),
                           ],
                         )
@@ -212,7 +213,7 @@ Container reminderTile(String title, String sub1,String sub2){
       borderRadius: BorderRadius.circular(10.0),
       border: Border.all(
         width: 3,
-        color: const Color(0xff142867),
+        color:  AppColor.primaryColor,
       ),
     ),
     child: Column(

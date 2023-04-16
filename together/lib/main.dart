@@ -19,8 +19,9 @@ import 'package:together/screens/auth/firstscreen.dart';
 import 'package:together/screens/all_messages.dart';
 import 'package:together/screens/pending_reminders.dart';
 import 'package:together/screens/reminders.dart';
-import 'package:together/screens/publish_event/event_name.dart';
-import 'package:together/screens/publish_event/ticket_details.dart';
+import 'package:together/screens/publish_event/publish_event_first_screen.dart';
+import 'package:together/screens/publish_event/publish_event_second_screen.dart';
+import 'package:together/utils/colors.dart';
 import '/screens/home_screen.dart';
 
 void main() async {
@@ -40,12 +41,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: const Color(0xFF142867),
+        primaryColor: AppColor.primaryColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           centerTitle: true,
           iconTheme: IconThemeData(
-            color: Color(0xFF142867),
+            color: AppColor.primaryColor,
           ),
           elevation: 2,
         ),
@@ -67,16 +68,16 @@ class MyApp extends StatelessWidget {
         ),
       ),
       scaffoldMessengerKey: snackbarKey,
-      home: UserDetailsScreen(),
-      // initialRoute: '/',
-      // routes: {
-      //   '/': (context) => SplashScreen(),
-      //   '/home': (context) => CustomNavigationBar(index: 2),
-      //   '/login': (context) => SignInScreen(),
-      //   '/sign_up': (context) => SignUp(),
-      //   '/sign_up_with_email': (context) => SignUpWithEmail(),
-      //   '/select_category': (context) => SelectCategoryScreen(),
-      // },
+      // home: UserDetailsScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashScreen(),
+        '/home': (context) => CustomNavigationBar(index: 2),
+        '/login': (context) => SignInScreen(),
+        '/sign_up': (context) => SignUp(),
+        '/sign_up_with_email': (context) => SignUpWithEmail(),
+        '/select_category': (context) => SelectCategoryScreen(),
+      },
     );
   }
 }

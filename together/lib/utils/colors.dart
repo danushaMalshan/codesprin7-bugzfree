@@ -1,6 +1,6 @@
 import 'dart:ui';
 
 class AppColor {
-  static const kScaffoldBackgroundColor = Color(0XFF0187A4);
+  static const primaryColor = Color(0xFF142867);
   
 }
