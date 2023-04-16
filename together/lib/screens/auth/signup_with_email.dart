@@ -12,6 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:together/components/snack_bar.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
+
 
 class SignUpWithEmail extends StatefulWidget {
   const SignUpWithEmail({Key? key}) : super(key: key);
@@ -32,6 +34,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   TextEditingController _ctrlPassword = TextEditingController();
   TextEditingController _ctrlAge = TextEditingController();
   TextEditingController _ctrlUsername = TextEditingController();
+
 
   ShowSnackBar snackBar = ShowSnackBar();
 
