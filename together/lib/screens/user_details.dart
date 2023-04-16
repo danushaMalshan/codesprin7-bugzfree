@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({Key? key}) : super(key: key);
@@ -12,19 +16,73 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
-  PlatformFile? pickedFile;
-
-
   final _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  String _fieldValue = '';
 
-  selectFile()async{
-    final file=await FilePicker.platform.pickFiles();
-    if (file==null)return;
-    setState(() {
-      pickedFile=file.files.first;
-    });
+  File? _imageFile;
+  final _picker = ImagePicker();
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (_imageFile != null) {
+      // Upload image to Firebase Storage
+      String fileName = DateTime.now().toString();
+      firebase_storage.Reference ref =
+      firebase_storage.FirebaseStorage.instance.ref().child('images/$fileName.jpg');
+      await ref.putFile(_imageFile!);
+      String downloadUrl = await ref.getDownloadURL();
+
+      setState(() {
+        _imageUrl = downloadUrl;
+      });
+    }
+  }
+
+
+  // Future<String> getUrl() async {
+  //   try{
+  //
+  //     Reference ref = FirebaseStorage.instance.ref().child('images/pro_pic/user.jpg');
+  //     String imageUrl = await ref.getDownloadURL();
+  //     String url=("$imageUrl");
+  //     return url;
+  //
+  //   }catch(e){}
+  // }
+
+  void _getDataFromFirestore() async {
+    try {
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.doc('users/81mzPQlfl3PspsfYCQ0SowcNxF83');
+      DocumentSnapshot documentSnapshot = await documentReference.get();
+
+      if (documentSnapshot.exists) {
+        setState(() {
+          _fieldValue = documentSnapshot.get('username');
+          _usernameController.text = _fieldValue;
+        });
+      }
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getDataFromFirestore();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,8 +116,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     children: <Widget>[
                       const CircleAvatar(
                         radius: 150.0,
-                        backgroundImage:
-                            AssetImage('assets/images/Profile Picture.jpg'),
+                        // backgroundImage: getUrl();
                       ),
                       Positioned(
                         bottom: 10.0,
@@ -67,7 +124,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         child: Container(
                           child: IconButton(
                             icon: Icon(Icons.add_photo_alternate),
-                            onPressed: selectFile(),
+                            onPressed: _pickImage,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -107,40 +164,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               color: Color(0xff142867),
                             ),
                           ),
-                          hintText: 'Email',
+                          hintText: 'Field Value',
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter email';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 30.0),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          icon: const Icon(Icons.password),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                              width: 2,
-                              color: Color(0xff142867),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                              width: 2,
-                              color: Color(0xff142867),
-                            ),
-                          ),
-                          hintText: 'Password',
-                        ),
-                        obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter email';
@@ -153,55 +178,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       onPressed: () {},
                       child: Text('Done'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0,horizontal: 40.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 40.0),
                         primary: const Color(0xff142867),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Stack(
-              //   children: [
-              //     CircleAvatar(
-              //       radius: 75,
-              //       backgroundColor: Colors.grey.shade200,
-              //       child: CircleAvatar(
-              //         radius: 70,
-              //         backgroundImage: AssetImage('assets/images/default.png'),
-              //       ),
-              //     ),
-              //     Positioned(
-              //       bottom: 1,
-              //       right: 1,
-              //       child: Container(
-              //         child: Padding(
-              //           padding: const EdgeInsets.all(2.0),
-              //           child: Icon(Icons.add_a_photo, color: Colors.black),
-              //         ),
-              //         decoration: BoxDecoration(
-              //             border: Border.all(
-              //               width: 3,
-              //               color: Colors.white,
-              //             ),
-              //             borderRadius: BorderRadius.all(
-              //               Radius.circular(
-              //                 50,
-              //               ),
-              //             ),
-              //             color: Colors.white,
-              //             boxShadow: [
-              //               BoxShadow(
-              //                 offset: Offset(2, 4),
-              //                 color: Colors.black.withOpacity(
-              //                   0.3,
-              //                 ),
-              //                 blurRadius: 3,
-              //               ),
-              //             ]),
-              //       ),
-              //     ),
-              //   ],
-              // )
             ],
           ),
         ),
@@ -212,14 +196,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
 
 Container myListTile(String listTitle) {
   return Container(
-    margin: EdgeInsets.symmetric(
+    margin: const EdgeInsets.symmetric(
       vertical: 6.0,
       horizontal: 20.0,
     ),
     child: ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
       shape: RoundedRectangleBorder(
-        side: BorderSide(
+        side: const BorderSide(
           width: 2,
         ),
         borderRadius: BorderRadius.circular(10),
