@@ -1,7 +1,5 @@
 import 'dart:io';
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
@@ -37,20 +35,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     }
   }
 
-  Future<void> _uploadImage() async {
-    if (_imageFile != null) {
-      // Upload image to Firebase Storage
-      String fileName = DateTime.now().toString();
-      firebase_storage.Reference ref =
-      firebase_storage.FirebaseStorage.instance.ref().child('images/$fileName.jpg');
-      await ref.putFile(_imageFile!);
-      String downloadUrl = await ref.getDownloadURL();
-
-      setState(() {
-        _imageUrl = downloadUrl;
-      });
-    }
-  }
 
 
   // Future<String> getUrl() async {
@@ -161,17 +145,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           icon: const Icon(Icons.badge),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                              width: 2,
-                              color: AppColor.primaryColor,
-                            ),
+
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                              width: 2,
-                              color: AppColor.primaryColor,
-                            ),
+
                           ),
 
                           hintText: 'Field Value',

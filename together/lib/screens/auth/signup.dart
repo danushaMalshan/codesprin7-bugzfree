@@ -1,5 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:together/utils/colors.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+Future<UserCredential?> signInWithGoogle() async {
+  try {
+
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return null;
+
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Sign in to Firebase with the Google credential
+    final UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+    // Return the user credential
+    return userCredential;
+  } catch (error) {
+    // Handle any errors
+    print('Failed to sign in with Google: $error');
+    return null;
+  }
+}
+
+VoidCallback _handleSignInWithGoogle() {
+  return () async {
+    // Call the signInWithGoogle() method
+    UserCredential? userCredential = await signInWithGoogle();
+
+    // Do something with the userCredential, such as updating the UI or navigating to a new page
+    if (userCredential != null) {
+      print('Signed in with Google: ${userCredential.user?.displayName}');
+      // Update the UI or navigate to a new page
+    } else {
+      print('Failed to sign in with Google');
+      // Show an error message or perform error handling
+    }
+  };
+}
+
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -97,6 +149,7 @@ Widget loginButtons(
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
     child: ListTile(
+      onTap: _handleSignInWithGoogle(),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
