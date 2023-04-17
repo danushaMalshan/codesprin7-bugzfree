@@ -10,7 +10,7 @@ import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:together/components/snack_bar.dart';
-import 'package:together/utils/colors.dart';
+
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -180,7 +181,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             width: 2,
                             color: Color(0xff142867),
                           ),
-                        ),
                         hintText: 'Username',
                       ),
                       validator: (value) {
