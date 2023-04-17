@@ -78,12 +78,12 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         loading = false;
       });
     } on FirebaseException catch (e) {
-      snackBar.showSnackaBar(context, e.message.toString());
+      snackBar.showSnackaBar(context, e.message.toString(),null);
       setState(() {
         loading = false;
       });
     } catch (e) {
-      snackBar.showSnackaBar(context, e.toString());
+      snackBar.showSnackaBar(context, e.toString(),null);
       setState(() {
         loading = false;
       });
@@ -266,7 +266,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             if (_validate()) {
               _signUpWithEmailPassword();
             } else {
-              snackBar.showSnackaBar(context, 'Fields Cannot be Empty');
+              snackBar.showSnackaBar(context, 'Fields Cannot be Empty',null);
             }
           },
           child: loading

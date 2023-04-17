@@ -37,12 +37,12 @@ class _SignInScreenState extends State<SignInScreen> {
         _loading = false;
       });
     } on FirebaseException catch (e) {
-      _snackBar.showSnackaBar(context, e.message.toString());
+      _snackBar.showSnackaBar(context, e.message.toString(),null);
       setState(() {
         _loading = false;
       });
     } catch (e) {
-      _snackBar.showSnackaBar(context, e.toString());
+      _snackBar.showSnackaBar(context, e.toString(),null);
       setState(() {
         _loading = false;
       });
@@ -157,7 +157,7 @@ class _SignInScreenState extends State<SignInScreen> {
             if (_validate()) {
               _signIn();
             } else {
-              _snackBar.showSnackaBar(context, 'Fields Cannot be Empty');
+              _snackBar.showSnackaBar(context, 'Fields Cannot be Empty',null);
             }
           },
           child: _loading

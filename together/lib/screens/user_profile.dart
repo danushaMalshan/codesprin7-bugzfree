@@ -36,12 +36,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           loading = false;
         });
       } on FirebaseException catch (e) {
-        snackBar.showSnackaBar(context, e.message.toString());
+        snackBar.showSnackaBar(context, e.message.toString(),null);
         setState(() {
           loading = false;
         });
       } catch (e) {
-        snackBar.showSnackaBar(context, e.toString());
+        snackBar.showSnackaBar(context, e.toString(),null);
         print(e);
         setState(() {
           loading = false;

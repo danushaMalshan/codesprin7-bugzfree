@@ -136,7 +136,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                             } else {
                               ShowSnackBar snackBar = ShowSnackBar();
                               snackBar.showSnackaBar(
-                                  context, 'Fields cannot be empty');
+                                  context, 'Fields cannot be empty',null);
                             }
                           },
                           child: Text(

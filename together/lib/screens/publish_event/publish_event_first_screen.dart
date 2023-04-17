@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:together/components/snack_bar.dart';
 import 'package:together/screens/publish_event/publish_event_second_screen.dart';
 import 'package:together/utils/colors.dart';
 import '../../components/appbar.dart';
@@ -17,10 +21,18 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   TextEditingController _ctrlDescription = TextEditingController();
   TextEditingController _ctrlStartDate = TextEditingController();
   TextEditingController _ctrlEndDate = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
   DateTime? startDateTime;
   DateTime? endDateTime;
+  ShowSnackBar snackBar = ShowSnackBar();
+  bool loading = false;
 
+  FirebaseAuth? _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  
   Future pickDateTime(BuildContext context, int status) async {
     final date = await pickDate(context);
     if (date == null) return;
@@ -85,24 +97,32 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
 
     return Scaffold(
       appBar: myAppBar(context, true),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: <Widget>[
-              Title(width),
-              textField(
-                  Icons.festival_outlined, 'Name of the Event', 1, _ctrlName),
-              textField(Icons.description, 'Description', 4, _ctrlDescription),
-              textFieldWithButtons(
-                  Icons.edit_calendar, 'Start Date & Time', _ctrlStartDate, 0),
-              textFieldWithButtons(
-                  Icons.edit_calendar, 'End Date & Time', _ctrlEndDate, 1),
-              nextButton(context),
-            ],
-          ),
-        ),
-      ),
+      body: loading
+          ? Center(
+              child: SpinKitWave(
+                color: AppColor.primaryColor,
+                size: 50,
+              ),
+            )
+          : SafeArea(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    Title(width),
+                    textField(Icons.festival_outlined, 'Name of the Event', 1,
+                        _ctrlName),
+                    textField(
+                        Icons.description, 'Description', 4, _ctrlDescription),
+                    textFieldWithButtons(Icons.edit_calendar,
+                        'Start Date & Time', _ctrlStartDate, 0),
+                    textFieldWithButtons(Icons.edit_calendar, 'End Date & Time',
+                        _ctrlEndDate, 1),
+                    nextButton(context),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -116,8 +136,10 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             primary: AppColor.primaryColor,
             padding: const EdgeInsets.symmetric(vertical: 20.0),
           ),
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
+            
+
               Navigator.push(
                   context,
                   MaterialPageRoute(

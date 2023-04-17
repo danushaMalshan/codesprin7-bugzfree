@@ -73,6 +73,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => SplashScreen(),
         '/home': (context) => CustomNavigationBar(index: 2),
+         '/profile': (context) => CustomNavigationBar(index: 1),
         '/login': (context) => SignInScreen(),
         '/sign_up': (context) => SignUp(),
         '/sign_up_with_email': (context) => SignUpWithEmail(),
