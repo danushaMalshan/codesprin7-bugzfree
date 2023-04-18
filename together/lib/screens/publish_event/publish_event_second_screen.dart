@@ -11,12 +11,14 @@ class PublishEventSecondScreen extends StatefulWidget {
       required this.eventName,
       required this.description,
       required this.startDate,
-      required this.endDate})
+      required this.endDate,
+      required this.category})
       : super(key: key);
   String eventName;
   String description;
   DateTime startDate;
   DateTime endDate;
+  int category;
   @override
   State<PublishEventSecondScreen> createState() =>
       _PublishEventSecondScreenState();
@@ -128,15 +130,17 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           PublishEventThirdScreen(
-                                              description: widget.description,
-                                              eventName: widget.eventName,
-                                              startDate: widget.startDate,
-                                              endDate: widget.endDate,
-                                              tickets: tickets)));
+                                            description: widget.description,
+                                            eventName: widget.eventName,
+                                            startDate: widget.startDate,
+                                            endDate: widget.endDate,
+                                            tickets: tickets,
+                                            category: widget.category,
+                                          )));
                             } else {
                               ShowSnackBar snackBar = ShowSnackBar();
                               snackBar.showSnackaBar(
-                                  context, 'Fields cannot be empty',null);
+                                  context, 'Fields cannot be empty', null);
                             }
                           },
                           child: Text(

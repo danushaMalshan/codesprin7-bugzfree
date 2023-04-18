@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:together/components/appbar.dart';
 import 'dart:async';
 
@@ -10,32 +12,79 @@ import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/utils/colors.dart';
 
 class EventDetailsScreen extends StatefulWidget {
+  EventDetailsScreen(
+      {Key? key,
+      required this.eventName,
+      required this.description,
+      required this.organizerId,
+      required this.startDate,
+      required this.endDate,
+      required this.latitude,
+      required this.longitude,
+      required this.images,
+      required this.category,
+      required this.coverImage,
+      required this.location,
+      required this.tickets})
+      : super(key: key);
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();
+  String eventName;
+  String description;
+  String organizerId;
+  DateTime startDate;
+  DateTime endDate;
+  double latitude;
+  double longitude;
+  List<dynamic> images;
+  int category;
+  String coverImage;
+  String location;
+  List<dynamic> tickets;
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int selectedIndex = 0;
-
+  String location = '';
   Completer<GoogleMapController> _controller = Completer();
+  String? duration;
+  CameraPosition? _kGooglePlex;
+  Set<Marker> _markers = {};
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_onTabSelect);
+    Duration duration = widget.endDate.difference(widget.startDate);
+    if (duration.inDays > 0) {
+      this.duration =
+          "${duration.inDays} days, ${duration.inHours.remainder(24)}:${duration.inMinutes.remainder(60)}:${duration.inSeconds.remainder(60)}";
+    } else if (duration.inHours > 0) {
+      this.duration =
+          "${duration.inHours}:${duration.inMinutes.remainder(60)}:${duration.inSeconds.remainder(60)}";
+    }
+    _kGooglePlex = CameraPosition(
+      target: LatLng(widget.latitude, widget.longitude),
+      zoom: 14.4746,
+    );
+    _markerAdd();
+  }
+
+  void _markerAdd() {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('${widget.eventName}'),
+          position: LatLng(widget.latitude, widget.longitude),
+          infoWindow: InfoWindow(
+            title: location,
+          ),
+        ),
+      );
+    });
   }
 
   void _onTabSelect() {
@@ -52,13 +101,18 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     super.dispose();
   }
 
+  String formatDate() {
+    DateTime date = DateTime.parse('${widget.startDate}');
+    String formattedDate = DateFormat('d MMMM y').format(date);
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      
-      appBar: myAppBar(context,true),
+      appBar: myAppBar(context, true),
       body: SizedBox(
         width: width,
         height: height,
@@ -82,26 +136,24 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
 
   Container TicketReservationsButton(double width) {
     return Container(
-              height: 75,
-              margin: EdgeInsets.only(bottom: 40),
-              width: width - 150,
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  'Ticket Reservations',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: AppColor.primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-            );
+      height: 75,
+      margin: EdgeInsets.only(bottom: 40),
+      width: width - 150,
+      child: ElevatedButton(
+        onPressed: () {},
+        child: Text(
+          'Ticket Reservations',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: AppColor.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      ),
+    );
   }
 
   Column EventLocationInMap(double width) {
@@ -126,7 +178,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: GoogleMap(
             mapType: MapType.normal,
-            initialCameraPosition: _kGooglePlex,
+            markers: _markers,
+            initialCameraPosition: _kGooglePlex!,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
@@ -152,7 +205,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: CarouselSlider(
+          child: CarouselSlider.builder(
             options: CarouselOptions(
               height: 150,
               aspectRatio: 16 / 9,
@@ -168,32 +221,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               enlargeFactor: 0.2,
               scrollDirection: Axis.horizontal,
             ),
-            items: [
-              SliderImage(context,
-                  'assets/images/obi-pixel7propix-BMjyJMlhPqY-unsplash.jpg'),
-              SliderImage(context,
-                  'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg'),
-              SliderImage(context,
-                  'assets/images/andre-mosele--tlIcpJuEVQ-unsplash.jpg'),
-            ],
-            // items: [
-            //   'assets/images/obi-pixel7propix-BMjyJMlhPqY-unsplash.jpg',
-            //   'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg',
-            //   'assets/images/andre-mosele--tlIcpJuEVQ-unsplash.jpg'
-            // ].map((i) {
-            //   return Builder(
-            //     builder: (BuildContext context) {
-            //       return Container(
-            //         width: MediaQuery.of(context).size.width,
-            //         margin: EdgeInsets.symmetric(horizontal: 3.0),
-            //         decoration: BoxDecoration(
-            //             borderRadius: BorderRadius.circular(20),
-            //             image: DecorationImage(
-            //                 image: AssetImage(i), fit: BoxFit.cover)),
-            //       );
-            //     },
-            //   );
-            // }).toList(),
+            itemBuilder: ((context, index, realIndex) {
+              return SliderImage(context, widget.images[index]);
+            }),
+            itemCount: widget.images.length,
           ),
         )
       ],
@@ -206,7 +237,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
       margin: EdgeInsets.symmetric(horizontal: 3.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(image: AssetImage(img), fit: BoxFit.cover)),
+          image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover)),
     );
   }
 
@@ -228,7 +259,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             child: Text(
-              'Bottom line? Ecommerce is big and getting bigger. And navigating the ever-changing ecommerce terrain is a big challenge for small businesses used to the brick-and-mortar paradigm. So many factors impact your success online: how familiar people are with your brand, how effectively your ',
+              widget.description,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -289,7 +320,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: AppColor.primaryColor, width: 2)),
+                        side:
+                            BorderSide(color: AppColor.primaryColor, width: 2)),
                   ),
                 ),
               ),
@@ -306,7 +338,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: Text(
-            'Bentota Beach Fiesta',
+            widget.eventName,
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ));
@@ -355,11 +387,13 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  CustomTabView("25 March 2023"),
-                  CustomTabView("7.30 pm Onwards"),
-                  CustomTabView("Bentota Beach Premises"),
-                  CustomTabView("Standing - Rs. 2,000/="),
-                  CustomTabView("All Night"),
+                  CustomTabView(formatDate()),
+                  CustomTabView(
+                      "${DateFormat('h:mm a').format(widget.startDate)} Onwards"),
+                  CustomTabView(widget.location),
+                  CustomTabView(
+                      "${widget.tickets[0]['name']} - Rs. ${widget.tickets[0]['price']}/="),
+                  CustomTabView(this.duration ?? ''),
                 ],
               ),
             ),
@@ -397,9 +431,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   Container EventBanner(double height, double width) {
     return Container(
       width: width,
-      child: Image.asset(
-        'assets/images/bentota_Event_Banner.jpg',
-        fit: BoxFit.fitWidth,
+      height: 200,
+      child: Image.network(
+        widget.coverImage,
+        fit: BoxFit.cover,
       ),
     );
   }

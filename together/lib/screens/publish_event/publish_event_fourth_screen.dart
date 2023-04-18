@@ -11,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/models/event_model.dart';
 import 'package:together/utils/colors.dart';
 import 'dart:math';
 
@@ -22,7 +23,9 @@ class PublishEventFourthScreen extends StatefulWidget {
       required this.startDate,
       required this.endDate,
       required this.tickets,
-      required this.latLng})
+      required this.latLng,
+      required this.category,
+      required this.location})
       : super(key: key);
   String eventName;
   String description;
@@ -30,6 +33,8 @@ class PublishEventFourthScreen extends StatefulWidget {
   DateTime endDate;
   List<Map<String, dynamic>> tickets;
   LatLng latLng;
+  int category;
+  String location;
   @override
   State<PublishEventFourthScreen> createState() =>
       _PublishEventFourthScreenState();
@@ -72,17 +77,22 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
           _imagesUrl.add(imageUrl);
         }
 
-        await _firestore.collection('events').doc().set({
-          'organizer_id': _user.uid,
-          'name': widget.eventName,
-          'description': widget.description,
-          'start_date': widget.startDate,
-          'end_date': widget.endDate,
-          'latitude': widget.latLng.latitude,
-          'longitude': widget.latLng.longitude,
-          'cover_image': _coverImgUrl,
-          'images': _imagesUrl
-        }).then((value) {
+        EventModel event = EventModel(
+            id: '',
+            name: widget.eventName,
+            organizer_id: _user.uid,
+            description: widget.description,
+            start_date: widget.startDate,
+            end_date: widget.endDate,
+            category: widget.category,
+            latitude: widget.latLng.latitude,
+            longitude: widget.latLng.longitude,
+            cover_image: _coverImgUrl!,
+            is_approve: false,
+            images: _imagesUrl,
+            location: widget.location,
+            tickets: widget.tickets);
+        await _firestore.collection('events').add(event.toMap()).then((value) {
           Navigator.pushReplacementNamed(context, '/profile');
           snackBar.showSnackaBar(
               context, 'Event successfully add for the review', Colors.green);

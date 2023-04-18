@@ -1,6 +1,17 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/components/snack_bar.dart';
+import 'package:together/models/category_model.dart';
+import 'package:together/models/event_model.dart';
+import 'package:together/screens/category_events.dart';
+import 'package:together/screens/event_details.dart';
 import 'package:together/utils/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,32 +22,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List trending = [
-    ['Music', 'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg'],
-    ['Politics', 'assets/images/Politics.jpg'],
-  ];
+  User? user = FirebaseAuth.instance.currentUser;
+  ShowSnackBar snackBar = ShowSnackBar();
+  late String _randomId;
+  List<int> randomNumbers = [];
 
-  List you_may_like = [
-    [
-      'Volunteering',
-      'assets/images/Happy volunteer looking at donation box on a sunny day-1.jpeg'
-    ],
-    ['Seasonal Special', 'assets/images/NewYear.jpg'],
-  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
-  List preferred = [
-    ['Education', 'assets/images/Education Cat.jpg'],
-    ['Dancing', 'assets/images/Dancing.jpg'],
-  ];
+  void addRandomNumbers() {
+    for (int i = 0; i < 5; i++) {
+      final random = Random();
+
+      int randomNumber = random.nextInt(15);
+      randomNumbers.add(randomNumber);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
+    addRandomNumbers();
     return Scaffold(
-      
-      appBar: myAppBar(context,false),
+      appBar: myAppBar(context, false),
       body: SizedBox(
         width: width,
         height: height,
@@ -72,67 +84,147 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Container(
           width: width,
-          height: (preferred.length) * 216,
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: preferred.length,
-            itemBuilder: ((context, index) => Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      width: width - 50,
-                      height: 200,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage(preferred[index][1]),
-                          )),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      child: Container(
-                        margin: EdgeInsets.all(8),
-                        width: width - 55,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            stops: [
-                              0.2,
-                              0.8,
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              AppColor.primaryColor.withOpacity(0.8),
-                              Colors.white.withOpacity(0.1),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user?.uid)
+                  .snapshots()
+                  .asyncMap((userDocument) async {
+                List<int> userCategories =
+                    userDocument.data()?['categories'].cast<int>();
+                print(userCategories);
+                QuerySnapshot eventDocuments = await FirebaseFirestore.instance
+                    .collection('events')
+                    .where('category', whereIn: userCategories)
+                    .limit(1000)
+                    .get();
+                return eventDocuments;
+              }),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  snackBar.showSnackaBar(
+                      context, snapshot.error.toString(), null);
+                  return Container();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return SpinKitCircle(
+                    color: AppColor.primaryColor,
+                    size: 30,
+                  );
+                } else {
+                  List<EventModel> events = (snapshot.data! as QuerySnapshot)
+                      .docs
+                      .map((doc) => EventModel.fromFirestore(doc))
+                      .toList();
+
+                  if (events.length == 0) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'Events not added yet',
+                          style: TextStyle(
+                              color: AppColor.primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
-                    Positioned.fill(
-                        bottom: 10,
-                        left: 30,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              preferred[index][0],
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              textAlign: TextAlign.center,
+                    );
+                  } else {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: events.length,
+                      itemBuilder: ((context, index) => GestureDetector(
+                            onTap: () {
+                              var item = events[index];
+                              DocumentReference docRef = FirebaseFirestore
+                                  .instance
+                                  .collection('categories')
+                                  .doc('${events[index].category}');
+                              docRef.update({'value': FieldValue.increment(1)});
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EventDetailsScreen(
+                                            tickets: item.tickets,
+                                            category: item.category,
+                                            coverImage: item.cover_image,
+                                            description: item.description,
+                                            endDate: item.end_date,
+                                            eventName: item.name,
+                                            images: item.images,
+                                            latitude: item.latitude,
+                                            location: item.location,
+                                            longitude: item.longitude,
+                                            organizerId: item.organizer_id,
+                                            startDate: item.start_date,
+                                          )));
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.all(8),
+                                  width: width - 50,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                            '${events[index].cover_image}')),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  child: Container(
+                                    margin: EdgeInsets.all(8),
+                                    width: width - 55,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        stops: [
+                                          0.2,
+                                          0.8,
+                                        ],
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          AppColor.primaryColor
+                                              .withOpacity(0.8),
+                                          Colors.white.withOpacity(0.1),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                                Positioned.fill(
+                                    bottom: 10,
+                                    left: 30,
+                                    child: Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          '${events[index].name}',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ))
+                              ],
                             ),
-                          ),
-                        ))
-                  ],
-                )),
-          ),
+                          )),
+                    );
+                  }
+                }
+              }),
         ),
       ],
     );
@@ -152,68 +244,109 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Container(
-          width: width,
-          height: 140,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: you_may_like.length,
-            itemBuilder: ((context, index) => Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      width: 200,
-                      height: 140,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage(you_may_like[index][1]),
-                          )),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      child: Container(
-                        margin: EdgeInsets.all(8),
-                        width: 200,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            stops: [
-                              0.2,
-                              0.8,
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              AppColor.primaryColor.withOpacity(0.8),
-                              Colors.white.withOpacity(0.1),
+            width: width,
+            height: 140,
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('categories')
+                  .where('id', whereIn: randomNumbers)
+                  .limit(5)
+                  .snapshots(),
+              builder: ((context, snapshot) {
+                if (snapshot.hasError) {
+                  snackBar.showSnackaBar(
+                      context, snapshot.error.toString(), null);
+                  return Container();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return SpinKitCircle(
+                    color: AppColor.primaryColor,
+                    size: 30,
+                  );
+                } else {
+                  List<CategoryModel> categories =
+                      (snapshot.data! as QuerySnapshot)
+                          .docs
+                          .map((doc) => CategoryModel.fromFirestore(doc))
+                          .toList();
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: ((context, index) => GestureDetector(
+                          onTap: () {
+                            DocumentReference docRef = FirebaseFirestore
+                                .instance
+                                .collection('categories')
+                                .doc('${categories[index].id}');
+                            docRef.update({'value': FieldValue.increment(1)});
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEventsScreen()));
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(8),
+                                width: 200,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image:
+                                          NetworkImage(categories[index].image),
+                                    )),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  width: 200,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      stops: [
+                                        0.2,
+                                        0.8,
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        AppColor.primaryColor.withOpacity(0.8),
+                                        Colors.white.withOpacity(0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                  bottom: 10,
+                                  left: 30,
+                                  child: Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: Text(
+                                        categories[index].name,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ))
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                        bottom: 10,
-                        left: 30,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              you_may_like[index][0],
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ))
-                  ],
-                )),
-          ),
-        ),
+                        )),
+                  );
+                }
+              }),
+            )),
       ],
     );
   }
@@ -232,67 +365,110 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Container(
-          width: width,
-          height: 180,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: trending.length,
-            itemBuilder: ((context, index) => Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      width: 230,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage(trending[index][1]),
-                          )),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      child: Container(
-                        margin: EdgeInsets.all(8),
-                        width: 230,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            stops: [
-                              0.2,
-                              0.8,
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              AppColor.primaryColor.withOpacity(0.8),
-                              Colors.white.withOpacity(0.1),
+            width: width,
+            height: 180,
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('categories')
+                  .orderBy('value', descending: true)
+                  .limit(5)
+                  .snapshots(),
+              builder: ((context, snapshot) {
+                if (snapshot.hasError) {
+                  snackBar.showSnackaBar(
+                      context, snapshot.error.toString(), null);
+                  return Container();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return SpinKitCircle(
+                    color: AppColor.primaryColor,
+                    size: 30,
+                  );
+                } else {
+                  List<CategoryModel> categories =
+                      (snapshot.data! as QuerySnapshot)
+                          .docs
+                          .map((doc) => CategoryModel.fromFirestore(doc))
+                          .toList();
+
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: ((context, index) => GestureDetector(
+                          onTap: () {
+                            DocumentReference docRef = FirebaseFirestore
+                                .instance
+                                .collection('categories')
+                                .doc('${categories[index].id}');
+                            docRef.update({'value': FieldValue.increment(1)});
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEventsScreen()));
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(8),
+                                width: 230,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                        categories[index].image,
+                                      ),
+                                    )),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  width: 230,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      stops: [
+                                        0.2,
+                                        0.8,
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        AppColor.primaryColor.withOpacity(0.8),
+                                        Colors.white.withOpacity(0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                  bottom: 10,
+                                  left: 30,
+                                  child: Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: Text(
+                                        categories[index].name,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ))
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                        bottom: 10,
-                        left: 30,
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              trending[index][0],
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ))
-                  ],
-                )),
-          ),
-        ),
+                        )),
+                  );
+                }
+              }),
+            )),
       ],
     );
   }
@@ -335,8 +511,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 //AppBar goes here...
-
-
 
 //TextStyles for home page goes here...
 

@@ -32,7 +32,25 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   FirebaseAuth? _auth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  
+  List<String> categories = [
+    'Art & Culture',
+    'Music',
+    'Education',
+    'Sports',
+    'Religious & Spirituality',
+    'Pet & Animals',
+    'Hobbies & Passions',
+    'Dancing',
+    'Charity',
+    'Politics',
+    'Fitness Workshops',
+    'Technology Workshops',
+    'Consulting',
+    'Volunteering',
+    'Seasonal Events',
+  ];
+  String? dropdownValue;
+
   Future pickDateTime(BuildContext context, int status) async {
     final date = await pickDate(context);
     if (date == null) return;
@@ -118,11 +136,79 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                         'Start Date & Time', _ctrlStartDate, 0),
                     textFieldWithButtons(Icons.edit_calendar, 'End Date & Time',
                         _ctrlEndDate, 1),
+                    DropDownMenu(),
                     nextButton(context),
                   ],
                 ),
               ),
             ),
+    );
+  }
+
+  Padding DropDownMenu() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 30.0,
+        left: 25.0,
+        right: 25.0,
+      ),
+      child: DropdownButtonFormField(
+        hint: Text('Select Category'),
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          icon: Icon(
+            Icons.category,
+            color: AppColor.primaryColor,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.red,
+            ),
+          ),
+          hintText: 'Select Category',
+          hintStyle: const TextStyle(
+            fontSize: 18.0,
+            //color: AppColor.primaryColor,
+          ),
+        ),
+        value: dropdownValue,
+        items: categories.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 18),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            dropdownValue = newValue!;
+          });
+        },
+        validator: (value) {
+          if (value == null || value == '') {
+            return "Select Event Category";
+          } else {
+            return null;
+          }
+        },
+      ),
     );
   }
 
@@ -138,8 +224,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-            
-
+              int category = categories.indexOf(dropdownValue!);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -148,6 +233,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                             eventName: _ctrlName.text,
                             startDate: startDateTime!,
                             endDate: endDateTime!,
+                            category: category,
                           )));
             }
           },

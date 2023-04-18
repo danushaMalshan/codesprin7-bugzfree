@@ -16,13 +16,15 @@ class PublishEventThirdScreen extends StatefulWidget {
       required this.description,
       required this.startDate,
       required this.endDate,
-      required this.tickets})
+      required this.tickets,
+      required this.category})
       : super(key: key);
   String eventName;
   String description;
   DateTime startDate;
   DateTime endDate;
   List<Map<String, dynamic>> tickets;
+  int category;
   @override
   State<PublishEventThirdScreen> createState() =>
       _PublishEventThirdScreenState();
@@ -71,7 +73,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
       )));
       print(placemark.name);
     } catch (e) {
-      snackBar.showSnackaBar(context, e.toString(),null);
+      snackBar.showSnackaBar(context, e.toString(), null);
     }
   }
 
@@ -140,7 +142,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                               _onSearch();
                             } else {
                               snackBar.showSnackaBar(
-                                  context, 'Enter valid address',null);
+                                  context, 'Enter valid address', null);
                             }
                           }),
                           decoration: InputDecoration(
@@ -191,6 +193,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                         )),
                     onPressed: () {
                       if (latLng != null) {
+                        List<String> adderss = _ctrlSearch.text.split(",");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -201,10 +204,12 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                                       endDate: widget.endDate,
                                       tickets: widget.tickets,
                                       latLng: latLng!,
+                                      category: widget.category,
+                                      location: adderss[0],
                                     )));
                       } else {
                         snackBar.showSnackaBar(
-                            context, 'Please select your event location',null);
+                            context, 'Please select your event location', null);
                       }
                     },
                     child: Text(

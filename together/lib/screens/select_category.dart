@@ -21,37 +21,36 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   bool loading = false;
   List<String> selectedCategories = [];
   List<dynamic> category = [
-    ['Art &\nCulture', 'assets/images/art.jpg', '1', false],
-    [
-      'Music',
-      'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg',
-      '2',
-      false
-    ],
-    ['Education', 'assets/images/istock_000042111248_full.jpg', '3', false],
-    ['Sports', 'assets/images/sports.jpg', '4', false],
-    ['Religious & Spirituality', 'assets/images/Religious.jpeg', '5', false],
-    ['Pet & Animals', 'assets/images/Pet.jpg', '6', false],
-    ['Hobbies & Passions', 'assets/images/Hobbies.png', '7', false],
-    ['Dancing', 'assets/images/Dancing.jpg', '8', false],
-    ['Charity', 'assets/images/Charity.jpg', '9', false],
-    ['Politics', 'assets/images/Politics.jpg', '10', false],
-    ['Fitness Workshops', 'assets/images/Fitness.jpg', '11', false],
-    ['Technology Workshops', 'assets/images/Technology.jpg', '12', false],
-    ['Consulting', 'assets/images/Consult.jpg', '13', false],
+    ['Art &\nCulture', 'assets/images/art.jpg', 1, false],
+    ['Music', 'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg', 2, false],
+    ['Education', 'assets/images/istock_000042111248_full.jpg', 3, false],
+    ['Sports', 'assets/images/sports.jpg', 4, false],
+    ['Religious & Spirituality', 'assets/images/Religious.jpeg', 5, false],
+    ['Pet & Animals', 'assets/images/Pet.jpg', 6, false],
+    ['Hobbies & Passions', 'assets/images/Hobbies.png', 7, false],
+    ['Dancing', 'assets/images/Dancing.jpg', 8, false],
+    ['Charity', 'assets/images/Charity.jpg', 9, false],
+    ['Politics', 'assets/images/Politics.jpg', 10, false],
+    ['Fitness Workshops', 'assets/images/Fitness.jpg', 11, false],
+    ['Technology Workshops', 'assets/images/Technology.jpg', 12, false],
+    ['Consulting', 'assets/images/Consult.jpg', 13, false],
     [
       'Volunteering',
       'assets/images/Happy volunteer looking at donation box on a sunny day-1.jpeg',
-      '14',
+      14,
       false
     ],
-    ['Seasonal Events', 'assets/images/NewYear.jpg', '15', false],
+    ['Seasonal Events', 'assets/images/NewYear.jpg', 15, false],
   ];
 
   Future<void> _addSelectedCategories() async {
     for (int i = 0; i < category.length; i++) {
       if (category[i][3]) {
         selectedCategories.add(category[i][2]);
+        DocumentReference docRef = FirebaseFirestore.instance
+            .collection('categories')
+            .doc('${category[i][2]}');
+        docRef.update({'value': FieldValue.increment(1)});
       }
     }
     try {
@@ -70,12 +69,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         loading = false;
       });
     } on FirebaseException catch (e) {
-      snackBar.showSnackaBar(context, e.message.toString(),null);
+      snackBar.showSnackaBar(context, e.message.toString(), null);
       setState(() {
         loading = false;
       });
     } catch (e) {
-      snackBar.showSnackaBar(context, e.toString(),null);
+      snackBar.showSnackaBar(context, e.toString(), null);
       setState(() {
         loading = false;
       });
@@ -118,7 +117,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                     style: ElevatedButton.styleFrom(
                       primary: AppColor.primaryColor,
                     ),
-                    onPressed: ()async {await _addSelectedCategories();},
+                    onPressed: () async {
+                      await _addSelectedCategories();
+                    },
                     child: Text(
                       'Done',
                       style:

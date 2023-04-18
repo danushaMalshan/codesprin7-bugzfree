@@ -12,8 +12,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/global.dart';
+import 'package:together/screens/auth/email_verify.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
-
 
 class SignUpWithEmail extends StatefulWidget {
   const SignUpWithEmail({Key? key}) : super(key: key);
@@ -35,13 +36,12 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   TextEditingController _ctrlAge = TextEditingController();
   TextEditingController _ctrlUsername = TextEditingController();
 
-
   ShowSnackBar snackBar = ShowSnackBar();
 
   bool loading = false;
 
   final _formKey = GlobalKey<FormState>();
-
+  String? imageUrl;
   Future<void> _signUpWithEmailPassword() async {
     try {
       setState(() {
@@ -51,43 +51,44 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       //
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
+
       if (credential != null) {
-        //add profile pic to firebase
         if (_image != null) {
           final ref =
               _storage.ref().child('images/pro_pic/${_ctrlEmail.text.trim()}');
           await ref.putFile(_image!);
-          final imageUrl = await ref.getDownloadURL();
+          imageUrl = await ref.getDownloadURL();
           await credential.user!.updatePhotoURL(imageUrl);
         }
 
         await credential.user!.updateDisplayName(_ctrlUsername.text);
-        
+
         await addUserData(credential);
-        await _auth.signInWithEmailAndPassword(
-            email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
-        _auth.authStateChanges().listen((User? user) {
-          if (user == null) {
-            Navigator.pushReplacementNamed(context, '/login');
-          } else {
-            Navigator.pushReplacementNamed(context, '/select_category');
-          }
-        });
+
+        navigatorKey.currentState?.pushReplacement(
+            MaterialPageRoute(builder: ((context) => EmailVerifyScreen())));
+      } else {
+        snackBar.showSnackaBar(context, 'Please verify your email', null);
       }
       setState(() {
         loading = false;
       });
     } on FirebaseException catch (e) {
-      snackBar.showSnackaBar(context, e.message.toString(),null);
+      snackBar.showSnackaBar(context, e.message.toString(), null);
       setState(() {
         loading = false;
       });
     } catch (e) {
-      snackBar.showSnackaBar(context, e.toString(),null);
+      snackBar.showSnackaBar(context, e.toString(), null);
       setState(() {
         loading = false;
       });
     }
+  }
+
+  bool isEmailVerified() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user != null && user.emailVerified;
   }
 
   Future<void> _signInWithEmailPassword() async {}
@@ -99,7 +100,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       'user_id': userID,
       'email': userEmail,
       'username': _ctrlUsername.text,
-      'age': _ctrlAge.text
+      'age': _ctrlAge.text,
+      'is_admin': false,
+      'img': imageUrl
     });
   }
 
@@ -266,7 +269,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             if (_validate()) {
               _signUpWithEmailPassword();
             } else {
-              snackBar.showSnackaBar(context, 'Fields Cannot be Empty',null);
+              snackBar.showSnackaBar(context, 'Fields Cannot be Empty', null);
             }
           },
           child: loading

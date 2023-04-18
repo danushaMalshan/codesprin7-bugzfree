@@ -4,6 +4,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/firebase_options.dart';
 import 'package:together/global.dart';
+import 'package:together/screens/auth/email_verify.dart';
 import 'package:together/screens/auth/signin.dart';
 import 'package:together/screens/auth/signup.dart';
 import 'package:together/screens/auth/signup_with_email.dart';
@@ -68,7 +69,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       scaffoldMessengerKey: snackbarKey,
-      // home: UserDetailsScreen(),
+      navigatorKey: navigatorKey,
+      // home: EmailVerifyScreen(),
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
