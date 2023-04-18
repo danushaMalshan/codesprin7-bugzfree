@@ -14,7 +14,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:together/components/snack_bar.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 
-
 class SignUpWithEmail extends StatefulWidget {
   const SignUpWithEmail({Key? key}) : super(key: key);
 
@@ -34,7 +33,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   TextEditingController _ctrlPassword = TextEditingController();
   TextEditingController _ctrlAge = TextEditingController();
   TextEditingController _ctrlUsername = TextEditingController();
-
 
   ShowSnackBar snackBar = ShowSnackBar();
 
@@ -62,7 +60,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         }
 
         await credential.user!.updateDisplayName(_ctrlUsername.text);
-        
+
         await addUserData(credential);
         await _auth.signInWithEmailAndPassword(
             email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
@@ -90,7 +88,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     }
   }
 
-  Future<void> _signInWithEmailPassword() async {}
 
   Future<void> addUserData(UserCredential credential) async {
     String userID = credential.user!.uid;
@@ -115,7 +112,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: SizedBox(
         width: width,
         height: height,
@@ -250,9 +247,10 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
   Container AppLogo(double width) {
     return Container(
-        margin: EdgeInsets.only(bottom: 50),
-        width: (width / 100) * 65,
-        child: Image.asset('assets/images/logo.jpeg'));
+      margin: EdgeInsets.only(bottom: 50),
+      width: (width / 100) * 65,
+      child: Image.asset('assets/images/logo.jpeg'),
+    );
   }
 
   Padding LoginButton(double width) {
