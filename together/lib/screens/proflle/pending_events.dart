@@ -22,19 +22,21 @@ class _PendingEventScreenState extends State<PendingEventScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: myAppBar(context, false),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Column(
-            children: [
-              Expanded(
-                child: preferredList(width),
-              ),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, false),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Column(
+              children: [
+                Expanded(
+                  child: preferredList(width),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -103,7 +105,7 @@ class _PendingEventScreenState extends State<PendingEventScreen> {
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image:
-                                        NetworkImage(events[index].coverImage)),
+                                        NetworkImage(events[index].coverImage??"https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fevents%2Fdefault_cover.jpg?alt=media&token=4faf4063-a0f9-409a-90a7-be92d76375ee")),
                               ),
                             ),
                             Positioned(
@@ -137,7 +139,7 @@ class _PendingEventScreenState extends State<PendingEventScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Text(
-                                      events[index].name,
+                                      events[index].name??'',
                                       style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,

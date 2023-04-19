@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:together/components/alert_dialog.dart';
+
 import 'package:together/components/appbar.dart';
+import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/models/category_model.dart';
 import 'package:together/models/event_model.dart';
@@ -45,21 +46,23 @@ class _HomeScreenState extends State<HomeScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     addRandomNumbers();
-    return Scaffold(
-      appBar: myAppBar(context, false),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                searchBar(context),
-                trendingList(width),
-                youMayLikeList(width),
-                preferredList(width)
-              ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, false),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  searchBar(context),
+                  trendingList(width),
+                  youMayLikeList(width),
+                  preferredList(width)
+                ],
+              ),
             ),
           ),
         ),
@@ -162,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
                                         image: NetworkImage(
-                                            events[index].coverImage)),
+                                            events[index].coverImage ?? "")),
                                   ),
                                 ),
                                 Positioned(
@@ -198,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding:
                                             const EdgeInsets.only(bottom: 10),
                                         child: Text(
-                                          events[index].name,
+                                          events[index].name ?? '',
                                           style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -476,6 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () {
           customDevelopmentShowDialog(context,
               'Sorry! This feature is under development and will be available in future updates');
+          
         },
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -516,9 +520,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-//AppBar goes here...
 
-//TextStyles for home page goes here...
 
 TextStyle homeTextStyle() {
   return const TextStyle(

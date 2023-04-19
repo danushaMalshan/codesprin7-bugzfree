@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  String id;
-  String username;
-  String userId;
-  String email;
-  String age;
+  String? id;
+  String? username;
+  String? userId;
+  String? email;
+  String? age;
   bool isAdmin;
-  String img;
+  String? img;
   List<dynamic> categories;
 
   UserModel(
-      {required this.id,
-      required this.username,
-      required this.userId,
-      required this.email,
-      required this.age,
-      required this.isAdmin,
-      required this.img,required this.categories});
+     { this.id,
+       this.username,
+       this.userId,
+       this.email,
+       this.age,
+       required this.isAdmin,
+       this.img,required this.categories});
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;

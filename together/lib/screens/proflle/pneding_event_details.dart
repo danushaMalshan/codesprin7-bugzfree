@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,15 +14,14 @@ import 'package:together/models/event_model.dart';
 import 'package:together/utils/colors.dart';
 
 class PendingEventDetailsScreen extends StatefulWidget {
- const PendingEventDetailsScreen(
-      {Key? key,
-      required this.event,
-      })
-      : super(key: key);
+  const PendingEventDetailsScreen({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
   @override
   State<PendingEventDetailsScreen> createState() =>
       _PendingEventDetailsScreenState();
- final EventModel event;
+  final EventModel event;
 }
 
 class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
@@ -60,7 +61,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
     setState(() {
       _markers.add(
         Marker(
-          markerId: MarkerId(widget.event.name),
+          markerId: MarkerId(widget.event.name ?? ''),
           position: LatLng(widget.event.latitude, widget.event.longitude),
           infoWindow: InfoWindow(
             title: location,
@@ -107,8 +108,13 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
           .collection('events')
           .doc(widget.event.id)
           .update({'is_approve': true}).then((value) {
-        snackBar.showSnackaBar(context, 'Event Approves', Colors.green);
+        snackBar.showSnackaBar(context, 'Event Approved', Colors.green);
+        Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+          '/profile',
+          (route) => false,
+        );
       });
+
       setState(() {
         loading = false;
       });
@@ -128,7 +134,6 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
   void _onTabSelect() {
     setState(() {
       selectedIndex = _tabController.index;
-      
     });
   }
 
@@ -149,89 +154,93 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: myAppBar(context, true),
-      body: loading
-          ? const Center(
-              child: SpinKitWave(
-                color: AppColor.primaryColor,
-                size: 40,
-              ),
-            )
-          : SizedBox(
-        width: width,
-        height: height,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              eventBanner(height, width),
-              eventName(),
-              customTabBar(),
-              eventButtons(),
-              eventDescription(),
-              eventPhotos(context),
-              eventLocationInMap(width),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        height: 60,
-                        padding: const EdgeInsets.only(right: 10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    width: 2, color: AppColor.primaryColor),
-                                borderRadius: BorderRadius.circular(10),
-                              )),
-                          onPressed: () {
-                            _rejectEvent();
-                          },
-                          child: const Text(
-                            'Reject',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: AppColor.primaryColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        height: 60,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: AppColor.primaryColor,
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    width: 2, color: AppColor.primaryColor),
-                                borderRadius: BorderRadius.circular(10),
-                              )),
-                          onPressed: () {
-                            _approveEvent();
-                          },
-                          child: const Text(
-                            'Approve',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, true),
+        body: loading
+            ? const Center(
+                child: SpinKitWave(
+                  color: AppColor.primaryColor,
+                  size: 40,
                 ),
               )
-            ],
-          ),
-        ),
+            : SizedBox(
+                width: width,
+                height: height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      eventBanner(height, width),
+                      eventName(),
+                      customTabBar(),
+                      eventDescription(),
+                      eventPhotos(context),
+                      eventLocationInMap(width),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                height: 60,
+                                padding: const EdgeInsets.only(right: 10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                            width: 2,
+                                            color: AppColor.primaryColor),
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                  onPressed: () {
+                                    _rejectEvent();
+                                  },
+                                  child: const Text(
+                                    'Reject',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: AppColor.primaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 10),
+                                height: 60,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: AppColor.primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                            width: 2,
+                                            color: AppColor.primaryColor),
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                  onPressed: () {
+                                    _approveEvent();
+                                  },
+                                  child: const Text(
+                                    'Approve',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -264,8 +273,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
         const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding:
-                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+            padding: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Location',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -279,6 +287,11 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
           width: width,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: GoogleMap(
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+              Factory<OneSequenceGestureRecognizer>(
+                () => EagerGestureRecognizer(),
+              ),
+            ].toSet(),
             mapType: MapType.normal,
             markers: _markers,
             initialCameraPosition: _kGooglePlex!,
@@ -297,8 +310,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
         const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding:
-                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+            padding: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Photos',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -324,9 +336,9 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
               scrollDirection: Axis.horizontal,
             ),
             itemBuilder: ((context, index, realIndex) {
-              return sliderImage(context, widget.event.images[index]);
+              return sliderImage(context, widget.event.images?[index]);
             }),
-            itemCount: widget.event.images.length,
+            itemCount: widget.event.images?.length ?? 0,
           ),
         )
       ],
@@ -361,7 +373,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             child: Text(
-              widget.event.description,
+              widget.event.description ?? '',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -415,8 +427,8 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
-                        side:
-                            const BorderSide(color: AppColor.primaryColor, width: 2)),
+                        side: const BorderSide(
+                            color: AppColor.primaryColor, width: 2)),
                   ),
                   child: const Text(
                     'Contact Organizer',
@@ -440,7 +452,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: Text(
-            widget.event.name,
+            widget.event.name ?? '',
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ));
@@ -495,7 +507,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
                       "${DateFormat('h:mm a').format(widget.event.startDate)} Onwards"),
                   customTabView(widget.event.location),
                   customTabView(
-                      "${widget.event.tickets[0]['name']} - Rs. ${widget.event.tickets[0]['price']}/="),
+                      "${widget.event.tickets?[0]['name']} - Rs. ${widget.event.tickets?[0]['price']}/="),
                   customTabView(duration ?? ''),
                 ],
               ),
@@ -533,9 +545,10 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
   SizedBox eventBanner(double height, double width) {
     return SizedBox(
       width: width,
-      height: 200,
+      height: 250,
       child: Image.network(
-        widget.event.coverImage,
+        widget.event.coverImage ??
+            'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fevents%2Fdefault_cover.jpg?alt=media&token=4faf4063-a0f9-409a-90a7-be92d76375ee',
         fit: BoxFit.cover,
       ),
     );

@@ -1,57 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/global.dart';
 import 'package:together/utils/colors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-bool isSignUp = true;
-
-final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
-DateTime? _lastPressed;
-Future<UserCredential?> signInWithGoogle() async {
-  try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) return null;
-
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    // Sign in to Firebase with the Google credential
-    final UserCredential userCredential =
-        await _auth.signInWithCredential(credential);
-    final User? user = userCredential.user;
-
-    // Persist user data in Firebase Authentication
-    await user!.updateDisplayName(user.displayName ?? '');
-    await user.updatePhotoURL(user.photoURL ?? '');
-    await user.updateEmail(user.email ?? '');
-    await user.reload(); // Reload user data from Firebase
-    // Return the user credential
-    return userCredential;
-  } catch (error) {
-    return null;
-  }
-}
-
-VoidCallback _handleSignInWithGoogle() {
-  return () async {
-    UserCredential? userCredential = await signInWithGoogle();
-
-    if (userCredential != null) {
-      navigatorKey.currentState?.pushReplacement(MaterialPageRoute(
-          builder: ((context) => const CustomNavigationBar(index: 2))));
-    } else {}
-  };
-}
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -61,13 +15,64 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  bool isSignUp = true;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  DateTime? _lastPressed;
+  final ShowSnackBar _snackBar = ShowSnackBar();
+  bool _loading = false;
+  Future<void> signInWithGoogle() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      if (googleAuth != null) {
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        final User? user = userCredential.user;
+        if (user != null) {
+          navigatorKey.currentState?.pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => const CustomNavigationBar(
+                        index: 2,
+                      )),
+              (route) => false);
+        }
+      }
+
+      setState(() {
+        _loading = false;
+      });
+    } on FirebaseException catch (e) {
+      _snackBar.showSnackaBar(context, e.message.toString(), null);
+
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+      _snackBar.showSnackaBar(context, e.toString(), null);
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         DateTime currentTime = DateTime.now();
         bool backBtnPressedTwice = _lastPressed != null &&
-            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+            currentTime.difference(_lastPressed!) < const Duration(seconds: 2);
 
         if (backBtnPressedTwice) {
           return true;
@@ -79,54 +84,62 @@ class _SignUpState extends State<SignUp> {
         snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
         return false;
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(height: 20),
-                const Image(
-                  image: AssetImage("assets/images/logo.jpeg"),
-                  height: 350,
-                  width: 300,
-                ),
-                const SizedBox(height: 70),
-                Column(
-                  children: [
-                    loginButtons(
-                        "Continue with Apple",
-                        "assets/icons/apple_logo.png",
-                        Colors.white,
-                        Colors.black,
-                        null),
-                    loginButtons(
-                      "Continue with Facebook",
-                      "assets/icons/facebook.png",
-                      Colors.white,
-                      const Color(0xff1877f2),
-                      null,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: _loading
+              ? const Center(
+                  child: SpinKitWave(
+                    color: AppColor.primaryColor,
+                    size: 40,
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(height: 20),
+                        const Image(
+                          image: AssetImage("assets/images/logo.jpeg"),
+                          height: 350,
+                          width: 300,
+                        ),
+                        const SizedBox(height: 70),
+                        Column(
+                          children: [
+                            loginButtons(
+                                "Continue with Apple",
+                                "assets/icons/apple_logo.png",
+                                Colors.white,
+                                Colors.black,
+                                null),
+                            loginButtons(
+                              "Continue with Facebook",
+                              "assets/icons/facebook.png",
+                              Colors.white,
+                              const Color(0xff1877f2),
+                              null,
+                            ),
+                            loginButtons(
+                              "Continue with Google",
+                              "assets/icons/google.png",
+                              AppColor.primaryColor,
+                              const Color(0xffd9d9d9),
+                              () {
+                                signInWithGoogle();
+                              },
+                            ),
+                            signUpWithEmail(context),
+                            const SizedBox(height: 20),
+                            alreadyhaveAnAccountText(context),
+                          ],
+                        ),
+                      ],
                     ),
-                    loginButtons(
-                      "Continue with Google",
-                      "assets/icons/google.png",
-                      AppColor.primaryColor,
-                      const Color(0xffd9d9d9),
-                      () {
-                        _handleSignInWithGoogle();
-                        Navigator.pushReplacementNamed(context, '/home');
-                      },
-                    ),
-                    signUpWithEmail(context),
-                    const SizedBox(height: 20),
-                    alreadyhaveAnAccountText(context),
-                  ],
+                  ),
                 ),
-              ],
-            ),
-          ),
         ),
       ),
     );

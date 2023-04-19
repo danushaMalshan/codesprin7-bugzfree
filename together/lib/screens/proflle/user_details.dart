@@ -17,7 +17,6 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
-
   final TextEditingController _usernameController = TextEditingController();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   File? _image;
@@ -30,7 +29,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   bool loading = false;
   @override
   void initState() {
- 
     super.initState();
     _usernameController.text = user?.displayName ?? '';
   }
@@ -53,6 +51,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         await user!.updateDisplayName(_usernameController.text).then((value) {
           snackBar.showSnackaBar(
               context, "User Details update successfully", Colors.green);
+          // Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+          //   '/profile',
+          //   (route) => false,
+          // );
+          Navigator.pop(context);
         });
       }
       setState(() {
@@ -75,135 +78,154 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: myAppBar(context, true),
-      body: loading
-          ? const Center(
-              child: SpinKitWave(
-                color: AppColor.primaryColor,
-                size: 40,
-              ),
-            )
-          : SingleChildScrollView(
-              child: SizedBox(
-                width: width,
-                height: height,
-                child: Column(children: [
-                  const Padding(
-                    padding: EdgeInsets.all(18.0),
-                    child: Text(
-                      'Let\'s change your credentials',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30.0,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 8.0),
-                    child: SizedBox(
-                      height: 300,
-                      width: 300,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            clipBehavior: Clip.hardEdge,
-                            height: 300,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: _image == null
-                                ? CircleAvatar(
-                                    radius: 150.0,
-                                    child: Image.network(user?.photoURL ??
-                                        'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fpro_pic%2Fuser.jpg?alt=media&token=4086b98c-0d4c-4789-a216-038b89b6a08d'))
-                                : Image.file(
-                                    _image!,
-                                    fit: BoxFit.cover,
-                                    width: 300,
-                                    height: 300,
-                                  ),
-                          ),
-                          Positioned(
-                            bottom: 10.0,
-                            right: 15.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30.0),
-                                border:
-                                    Border.all(width: 2.0, color: Colors.amber),
-                              ),
-                              height: 50.0,
-                              width: 50.0,
-                              child: IconButton(
-                                icon: const Icon(Icons.add_photo_alternate),
-                                onPressed: () async {
-                                  final pickedFile = await _picker.pickImage(
-                                      source: ImageSource.gallery,
-                                      imageQuality: 50);
-                                  setState(() {
-                                    _image = File(pickedFile!.path);
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 30.0),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        icon: const Icon(Icons.badge),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: const BorderSide(
-                            width: 2,
-                            color: Color(0xff142867),
-                          ),
+    List<UserInfo>? providerData = user?.providerData;
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, true),
+        body: loading
+            ? const Center(
+                child: SpinKitWave(
+                  color: AppColor.primaryColor,
+                  size: 40,
+                ),
+              )
+            : SingleChildScrollView(
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: Column(children: [
+                    const Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: Text(
+                        'Let\'s change your credentials',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30.0,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: const BorderSide(
-                            width: 2,
-                            color: Color(0xff142867),
-                          ),
-                        ),
-                        hintText: 'Username',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter username';
-                        }
-                        return null;
-                      },
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _updateUserDetails(context);
-                    },
-                    style: ElevatedButton.styleFrom(
+                    Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 40.0),
-                      primary: const Color(0xff142867),
+                          vertical: 20.0, horizontal: 8.0),
+                      child: SizedBox(
+                        height: 300,
+                        width: 300,
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              clipBehavior: Clip.hardEdge,
+                              height: 300,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: _image == null
+                                  ? CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      radius: 150.0,
+                                      child: Image.network(
+                                        user?.photoURL ??
+                                            'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fpro_pic%2Fuser.jpg?alt=media&token=4086b98c-0d4c-4789-a216-038b89b6a08d',
+                                        width: 500,
+                                        height: 500,
+                                        fit: BoxFit.cover,
+                                      ))
+                                  : Image.file(
+                                      _image!,
+                                      fit: BoxFit.cover,
+                                      width: 300,
+                                      height: 300,
+                                    ),
+                            ),
+                            Positioned(
+                              bottom: 10.0,
+                              right: 15.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  border: Border.all(
+                                      width: 2.0, color: Colors.amber),
+                                ),
+                                height: 50.0,
+                                width: 50.0,
+                                child: IconButton(
+                                  icon: const Icon(Icons.add_photo_alternate),
+                                  onPressed:
+                                      // (providerData!.any((info) =>
+                                      //         info.providerId == 'google.com'))
+                                      //     ? () {
+                                      //         ShowSnackBar snackBar =
+                                      //             ShowSnackBar();
+                                      //         snackBar.showSnackaBar(
+                                      //             context,
+                                      //             'You cannot change the profile picture when signed in with Google',
+                                      //             Colors.red);
+                                      //       }
+                                      //     :
+                                      () async {
+                                    final pickedFile = await _picker.pickImage(
+                                        source: ImageSource.gallery,
+                                        imageQuality: 50);
+                                    setState(() {
+                                      _image = File(pickedFile!.path);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    child: const Text('Done'),
-                  ),
-                  Container(
-                    height: 500,
-                  )
-                ]),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 30.0),
+                      child: TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.badge),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            borderSide: const BorderSide(
+                              width: 2,
+                              color: Color(0xff142867),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            borderSide: const BorderSide(
+                              width: 2,
+                              color: Color(0xff142867),
+                            ),
+                          ),
+                          hintText: 'Username',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter username';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _updateUserDetails(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 40.0),
+                        primary: const Color(0xff142867),
+                      ),
+                      child: const Text('Done'),
+                    ),
+                    Container(
+                      height: 500,
+                    )
+                  ]),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

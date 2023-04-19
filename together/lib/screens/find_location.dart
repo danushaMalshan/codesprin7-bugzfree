@@ -24,43 +24,45 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: myAppBar(context, false),
-      body: undeDevelopment
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Image.asset(
-                    'assets/images/repair.png',
-                    height: 70,
-                    width: 70,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 20.0,
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, false),
+        body: undeDevelopment
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                    child: Text(
-                      'Sorry! This Screen is under development and will be available in future updates',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
+                    Image.asset(
+                      'assets/images/repair.png',
+                      height: 70,
+                      width: 70,
                     ),
-                  ),
-                ],
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 20.0,
+                      ),
+                      child: Text(
+                        'Sorry! This Screen is under development and will be available in future updates',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : GoogleMap(
+                mapType: MapType.hybrid,
+                initialCameraPosition: _kGooglePlex,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
               ),
-            )
-          : GoogleMap(
-              mapType: MapType.hybrid,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
+      ),
     );
   }
 }

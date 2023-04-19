@@ -57,17 +57,21 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         loading = true;
       });
 
-      await _firestore
-          .collection('users')
-          .doc(user!.uid)
-          .update({'categories': selectedCategories}).then((value) {
-        navigatorKey.currentState?.pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => CustomNavigationBar(
-                      index: 2,
-                    )),
-            (route) => false);
-      });
+      if (selectedCategories.length >= 3) {
+        await _firestore
+            .collection('users')
+            .doc(user!.uid)
+            .update({'categories': selectedCategories}).then((value) {
+          navigatorKey.currentState?.pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => const CustomNavigationBar(
+                        index: 2,
+                      )),
+              (route) => false);
+        });
+      } else {
+        snackBar.showSnackaBar(context, 'Select at least 3 Categories', null);
+      }
 
       setState(() {
         loading = false;
@@ -88,109 +92,112 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            leading: const Align(
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.black,
-              ),
-            ),
-            title: const Align(
-              alignment: Alignment.center,
-              child: Image(
-                image: AssetImage(
-                  'assets/images/Logo & Name__1.png',
+    return SafeArea(
+      child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: AppBar(
+              backgroundColor: Colors.white,
+              leading: const Align(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.black,
                 ),
-                height: 40,
-                // width: 140,
               ),
-            ),
-            actions: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: SizedBox(
-                  width: 80,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: AppColor.primaryColor,
-                    ),
-                    onPressed: () async {
-                      await _addSelectedCategories();
-                    },
-                    child: const Text(
-                      'Done',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title: const Align(
+                alignment: Alignment.center,
+                child: Image(
+                  image: AssetImage(
+                    'assets/images/Logo & Name__1.png',
+                  ),
+                  height: 40,
+                  // width: 140,
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: SizedBox(
+                    width: 80,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: AppColor.primaryColor,
+                      ),
+                      onPressed: () async {
+                        await _addSelectedCategories();
+                      },
+                      child: const Text(
+                        'Done',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 0, bottom: 0),
-                child: Text(
-                  'SELECT CATEGORIES',
-                  style: TextStyle(
-                      color: AppColor.primaryColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 0, bottom: 0),
+                  child: Text(
+                    'SELECT CATEGORIES',
+                    style: TextStyle(
+                        color: AppColor.primaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 25),
+                  ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 15),
-                child: Text(
-                  'Please select a minimum of 3 categories',
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 20),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Text(
+                    'Please select a minimum of 3 categories',
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 20),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                    itemCount: category.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 3 / 4,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 15,
-                            crossAxisCount: 3),
-                    itemBuilder: (context, index) => categoryCard(
-                            width, category[index][1], category[index][0], () {
-                          setState(() {
-                            if (category[index][3] == true) {
-                              category[index][3] = false;
-                            } else {
-                              category[index][3] = true;
-                            }
-                          });
-                        }, category[index][3])),
-              ),
-            ],
+                Expanded(
+                  child: GridView.builder(
+                      itemCount: category.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 3 / 4,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 15,
+                              crossAxisCount: 3),
+                      itemBuilder: (context, index) => categoryCard(
+                              width, category[index][1], category[index][0],
+                              () {
+                            setState(() {
+                              if (category[index][3] == true) {
+                                category[index][3] = false;
+                              } else {
+                                category[index][3] = true;
+                              }
+                            });
+                          }, category[index][3])),
+                ),
+              ],
+            ),
+          )
+          //  GridView.count(
+          // childAspectRatio: 2 / 3,
+          // crossAxisCount: 3,
+          // crossAxisSpacing: 10,
+          // mainAxisSpacing: 10,
+          // padding: EdgeInsets.all(10),
+          //     children: [
+          //       CategoryCard(width),
+          //     ]),
           ),
-        )
-        //  GridView.count(
-        // childAspectRatio: 2 / 3,
-        // crossAxisCount: 3,
-        // crossAxisSpacing: 10,
-        // mainAxisSpacing: 10,
-        // padding: EdgeInsets.all(10),
-        //     children: [
-        //       CategoryCard(width),
-        //     ]),
-        );
+    );
   }
 
   InkWell categoryCard(

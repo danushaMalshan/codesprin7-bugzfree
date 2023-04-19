@@ -14,53 +14,55 @@ class _MyAllMessagesState extends State<MyAllMessages> {
   bool undeDevelopment = true;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: myAppBar(context, false),
-      body: undeDevelopment
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Image.asset(
-                    'assets/images/repair.png',
-                    height: 70,
-                    width: 70,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 20.0,
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, false),
+        body: undeDevelopment
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                    child: Text(
-                      'Sorry! This Screen is under development and will be available in future updates',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
+                    Image.asset(
+                      'assets/images/repair.png',
+                      height: 70,
+                      width: 70,
                     ),
-                  ),
-                ],
-              ),
-            )
-          : SafeArea(
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Center(
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 20.0,
+                      ),
                       child: Text(
-                        'All Messages',
-                        style: homeTextStyle(),
+                        'Sorry! This Screen is under development and will be available in future updates',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                  messagePreview('Jagath Rathnayake', '10/03/2023', '22:52'),
-                  messagePreview('Nimal Lansa', '05/03/2023', '22:45'),
-                ],
+                  ],
+                ),
+              )
+            : SafeArea(
+                child: ListView(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: Center(
+                        child: Text(
+                          'All Messages',
+                          style: homeTextStyle(),
+                        ),
+                      ),
+                    ),
+                    messagePreview('Jagath Rathnayake', '10/03/2023', '22:52'),
+                    messagePreview('Nimal Lansa', '05/03/2023', '22:45'),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

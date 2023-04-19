@@ -1,21 +1,25 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+
 import 'package:together/components/appbar.dart';
+import 'package:together/components/show_dialog.dart';
 import 'dart:async';
 
 import 'package:together/models/event_model.dart';
 import 'package:together/utils/colors.dart';
 
 class EventDetailsScreen extends StatefulWidget {
- const EventDetailsScreen({
+  const EventDetailsScreen({
     Key? key,
     required this.event,
   }) : super(key: key);
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();
- final EventModel event;
+  final EventModel event;
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen>
@@ -33,8 +37,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_onTabSelect);
-    Duration duration =
-        widget.event.endDate.difference(widget.event.startDate);
+    Duration duration = widget.event.endDate.difference(widget.event.startDate);
     String daysText = duration.inDays > 1 ? 'Days' : 'Day';
     String hourText = duration.inHours > 1 ? 'Hours' : 'Hour';
     if (duration.inDays > 0) {
@@ -54,7 +57,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     setState(() {
       _markers.add(
         Marker(
-          markerId: MarkerId(widget.event.name),
+          markerId: MarkerId(widget.event.name ?? ''),
           position: LatLng(widget.event.latitude, widget.event.longitude),
           infoWindow: InfoWindow(
             title: location,
@@ -67,7 +70,6 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   void _onTabSelect() {
     setState(() {
       selectedIndex = _tabController.index;
-      
     });
   }
 
@@ -88,47 +90,113 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: myAppBar(context, true),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              eventBanner(height, width),
-              eventName(),
-              customTabBar(),
-              eventButtons(),
-              eventDescription(),
-              eventPhotos(context),
-              eventLocationInMap(width),
-              ticketReservationsButton(width),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, true),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                eventBanner(height, width),
+                eventName(),
+                customTabBar(),
+                eventButtons(),
+                eventDescription(),
+                eventPhotos(context),
+                eventLocationInMap(width),
+                ticketReservationsButton(width),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container ticketReservationsButton(double width) {
-    return Container(
-      height: 75,
-      margin: const EdgeInsets.only(bottom: 40),
-      width: width - 150,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          primary: AppColor.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+  Widget ticketReservationsButton(double width) {
+    return SizedBox(
+      width: width,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 75,
+              margin: const EdgeInsets.only(bottom: 40, left: 10, right: 10),
+              width: width,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: AppColor.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  'Ticket Reservations',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           ),
-        ),
-        child:const Text(
-          'Ticket Reservations',
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
-        ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 75,
+              margin: const EdgeInsets.only(bottom: 40, right: 10),
+              width: width,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: AppColor.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  'Ticket Reservations',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 75,
+              margin: const EdgeInsets.only(bottom: 40, right: 10),
+              width: width,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: BorderSide(width: 2, color: AppColor.primaryColor),
+                  ),
+                ),
+                child: const Text(
+                  'Share on',
+                  style: TextStyle(
+                      color: AppColor.primaryColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -139,8 +207,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding:
-                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+            padding: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Location',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -154,6 +221,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           width: width,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: GoogleMap(
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+              Factory<OneSequenceGestureRecognizer>(
+                () => EagerGestureRecognizer(),
+              ),
+            ].toSet(),
             mapType: MapType.normal,
             markers: _markers,
             initialCameraPosition: _kGooglePlex!,
@@ -172,8 +244,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding:
-                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+            padding: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Photos',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -199,9 +270,9 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               scrollDirection: Axis.horizontal,
             ),
             itemBuilder: ((context, index, realIndex) {
-              return sliderImage(context, widget.event.images[index]);
+              return sliderImage(context, widget.event.images?[index]);
             }),
-            itemCount: widget.event.images.length,
+            itemCount: widget.event.images?.length ?? 0,
           ),
         )
       ],
@@ -236,7 +307,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             child: Text(
-              widget.event.description,
+              widget.event.description ?? "",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -260,7 +331,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               child: Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    customDevelopmentShowDialog(context,
+                        'Sorry! This feature is under development and will be available in future updates');
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: AppColor.primaryColor,
                     shape: RoundedRectangleBorder(
@@ -285,13 +359,16 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    customDevelopmentShowDialog(context,
+                        'Sorry! This feature is under development and will be available in future updates');
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
-                        side:
-                            const BorderSide(color: AppColor.primaryColor, width: 2)),
+                        side: const BorderSide(
+                            color: AppColor.primaryColor, width: 2)),
                   ),
                   child: const Text(
                     'Contact Organizer',
@@ -315,7 +392,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: Text(
-            widget.event.name,
+            widget.event.name ?? '',
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ));
@@ -370,7 +447,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                       "${DateFormat('h:mm a').format(widget.event.startDate)} Onwards"),
                   customTabView(widget.event.location),
                   customTabView(
-                      "${widget.event.tickets[0]['name']} - Rs. ${widget.event.tickets[0]['price']}/="),
+                      "${widget.event.tickets?[0]['name']} - Rs. ${widget.event.tickets?[0]['price']}/="),
                   customTabView(duration ?? ''),
                 ],
               ),
@@ -408,9 +485,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   SizedBox eventBanner(double height, double width) {
     return SizedBox(
       width: width,
-      height: 200,
+      height: 250,
       child: Image.network(
-        widget.event.coverImage,
+        widget.event.coverImage ??
+            'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fevents%2Fdefault_cover.jpg?alt=media&token=4faf4063-a0f9-409a-90a7-be92d76375ee',
         fit: BoxFit.cover,
       ),
     );

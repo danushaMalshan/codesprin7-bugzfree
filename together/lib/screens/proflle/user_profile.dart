@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:together/components/alert_dialog.dart';
+
 import 'package:together/components/appbar.dart';
+import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/models/user_model.dart';
-import 'package:together/screens/auth/signin.dart';
+
 import 'package:together/screens/proflle/pending_events.dart';
 
 import 'package:together/screens/publish_event/publish_event_first_screen.dart';
@@ -97,7 +98,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           .toList();
 
                       return SizedBox(
-                        width: double.infinity,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
                         child: Column(
                           children: <Widget>[
                             Row(
@@ -114,8 +116,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     child: CircleAvatar(
                                         backgroundColor: Colors.transparent,
                                         radius: 70,
-                                        child: Image.network(user?.photoURL ??
-                                            'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fpro_pic%2Fuser.jpg?alt=media&token=4086b98c-0d4c-4789-a216-038b89b6a08d')),
+                                        child: Image.network(
+                                          user?.photoURL ??
+                                              'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fpro_pic%2Fuser.jpg?alt=media&token=916b8d62-ec67-4cf7-97fd-5349e7e43aa4',
+                                          width: 140,
+                                          height: 140,
+                                          fit: BoxFit.cover,
+                                        )),
                                   ),
                                 ),
                                 Expanded(

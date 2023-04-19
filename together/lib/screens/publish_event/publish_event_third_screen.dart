@@ -8,21 +8,23 @@ import 'package:together/screens/publish_event/publish_event_fourth_screen.dart'
 import 'package:together/utils/colors.dart';
 
 class PublishEventThirdScreen extends StatefulWidget {
- const PublishEventThirdScreen(
+  const PublishEventThirdScreen(
       {Key? key,
       required this.eventName,
       required this.description,
       required this.startDate,
+      required this.ticketReservationLink,
       required this.endDate,
       required this.tickets,
       required this.category})
       : super(key: key);
- final String eventName;
- final String description;
- final DateTime startDate;
- final DateTime endDate;
- final List<Map<String, dynamic>> tickets;
- final int category;
+  final String eventName;
+  final String description;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String ticketReservationLink;
+  final List<Map<String, dynamic>> tickets;
+  final int category;
   @override
   State<PublishEventThirdScreen> createState() =>
       _PublishEventThirdScreenState();
@@ -69,7 +71,6 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
         target: latLng,
         zoom: 15,
       )));
-     
     } catch (e) {
       snackBar.showSnackaBar(context, e.toString(), null);
     }
@@ -96,130 +97,135 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: myAppBar(context, true),
-      body: SizedBox(
-        height: height,
-        width: width,
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text(
-                'Mark Your Event Location',
-                style: TextStyle(
-                    color: AppColor.primaryColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, true),
+        body: SizedBox(
+          height: height,
+          width: width,
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  'Mark Your Event Location',
+                  style: TextStyle(
+                      color: AppColor.primaryColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  // Positioned(top: 20, left: 10, child: TextField()),
+              Expanded(
+                child: Stack(
+                  children: [
+                    // Positioned(top: 20, left: 10, child: TextField()),
 
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    onTap: _onMapTap,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: _markers,
-                  ),
-                  Positioned.fill(
-                    top: 30,
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: TextField(
-                          controller: _ctrlSearch,
-                          onSubmitted: ((value) {
-                            if (value != '') {
-                              _onSearch();
-                            } else {
-                              snackBar.showSnackaBar(
-                                  context, 'Enter valid address', null);
-                            }
-                          }),
-                          decoration: InputDecoration(
-                            hintText: 'Enter Location Address',
-                            border: UnderlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: _kGooglePlex,
+                      onTap: _onMapTap,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                      markers: _markers,
+                    ),
+                    Positioned.fill(
+                      top: 30,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: TextField(
+                            controller: _ctrlSearch,
+                            onSubmitted: ((value) {
+                              if (value != '') {
+                                _onSearch();
+                              } else {
+                                snackBar.showSnackaBar(
+                                    context, 'Enter valid address', null);
+                              }
+                            }),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Location Address',
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              fillColor: Colors.white.withOpacity(0.7),
+                              filled: true,
+                              contentPadding: const EdgeInsets.only(
+                                  left: 20, top: 10, bottom: 10),
+                              suffixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            fillColor: Colors.white.withOpacity(0.7),
-                            filled: true,
-                            contentPadding:
-                                const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                            suffixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
+                            cursorColor: Colors.black,
                           ),
-                          cursorColor: Colors.black,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: SizedBox(
-                height: 40,
-                width: width - 100,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: AppColor.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 2, color: AppColor.primaryColor),
-                          borderRadius: BorderRadius.circular(10),
-                        )),
-                    onPressed: () {
-                      if (latLng != null) {
-                        List<String> adderss = _ctrlSearch.text.split(",");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PublishEventFourthScreen(
-                                      description: widget.description,
-                                      eventName: widget.eventName,
-                                      startDate: widget.startDate,
-                                      endDate: widget.endDate,
-                                      tickets: widget.tickets,
-                                      latLng: latLng!,
-                                      category: widget.category,
-                                      location: adderss[0],
-                                    )));
-                      } else {
-                        snackBar.showSnackaBar(
-                            context, 'Please select your event location', null);
-                      }
-                    },
-                    child: const Text(
-                      'Next',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: SizedBox(
+                  height: 40,
+                  width: width - 100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: AppColor.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 2, color: AppColor.primaryColor),
+                            borderRadius: BorderRadius.circular(10),
+                          )),
+                      onPressed: () {
+                        if (latLng != null) {
+                          List<String> adderss = _ctrlSearch.text.split(",");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PublishEventFourthScreen(
+                                        description: widget.description,
+                                        eventName: widget.eventName,
+                                        startDate: widget.startDate,
+                                        endDate: widget.endDate,
+                                        tickets: widget.tickets,
+                                        latLng: latLng!,
+                                        category: widget.category,
+                                        location: adderss[0],
+                                        ticketReservationLink:
+                                            widget.ticketReservationLink,
+                                      )));
+                        } else {
+                          snackBar.showSnackaBar(context,
+                              'Please select your event location', null);
+                        }
+                      },
+                      child: const Text(
+                        'Next',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

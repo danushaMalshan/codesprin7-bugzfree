@@ -14,28 +14,30 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder(
-        stream: _auth.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            User? user = snapshot.data as User?;
-            Future.delayed(const Duration(seconds: 5)).then((value) => {
-                  if (user == null)
-                    {
-                      Navigator.pushReplacementNamed(
-                          context, '/sign_up')
-                    }
-                  else
-                    {Navigator.pushReplacementNamed(context, '/home')}
-                });
-
-            return Center(child: Image.asset('assets/icons/splash_logo.gif'));
-          } else {
-            // Connection is not yet established
-            return Center(child: Image.asset('assets/icons/splash_logo.gif'));
-          }
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: StreamBuilder(
+          stream: _auth.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              User? user = snapshot.data as User?;
+              Future.delayed(const Duration(seconds: 5)).then((value) => {
+                    if (user == null)
+                      {
+                        Navigator.pushReplacementNamed(
+                            context, '/sign_up')
+                      }
+                    else
+                      {Navigator.pushReplacementNamed(context, '/home')}
+                  });
+    
+              return Center(child: Image.asset('assets/icons/splash_logo.gif'));
+            } else {
+              // Connection is not yet established
+              return Center(child: Image.asset('assets/icons/splash_logo.gif'));
+            }
+          },
+        ),
       ),
     );
   }
