@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/global.dart';
 import 'package:together/utils/colors.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
@@ -16,7 +18,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = false;
-  List<String> selectedCategories = [];
+  List<int> selectedCategories = [];
   List<dynamic> category = [
     ['Art &\nCulture', 'assets/images/art.jpg', 1, false],
     ['Music', 'assets/images/james-barbosa-qOWjDs-77cM-unsplash.jpg', 2, false],
@@ -59,7 +61,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           .collection('users')
           .doc(user!.uid)
           .update({'categories': selectedCategories}).then((value) {
-        Navigator.pushReplacementNamed(context, '/home');
+        navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => CustomNavigationBar(
+                      index: 2,
+                    )),
+            (route) => false);
       });
 
       setState(() {
@@ -154,11 +161,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
               Expanded(
                 child: GridView.builder(
                     itemCount: category.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 3 / 4,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        crossAxisCount: 3),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 3 / 4,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 15,
+                            crossAxisCount: 3),
                     itemBuilder: (context, index) => categoryCard(
                             width, category[index][1], category[index][0], () {
                           setState(() {

@@ -34,7 +34,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   ShowSnackBar snackBar = ShowSnackBar();
 
   bool loading = false;
-
+  DateTime? _lastPressed;
   final _formKey = GlobalKey<FormState>();
   String? imageUrl;
   Future<void> _signUpWithEmailPassword() async {
@@ -43,26 +43,24 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         loading = true;
       });
 
-      //
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
 
-      
-        if (_image != null) {
-          final ref =
-              _storage.ref().child('images/pro_pic/${_ctrlEmail.text.trim()}');
-          await ref.putFile(_image!);
-          imageUrl = await ref.getDownloadURL();
-          await credential.user!.updatePhotoURL(imageUrl);
-        }
+      if (_image != null) {
+        final ref =
+            _storage.ref().child('images/pro_pic/${_ctrlEmail.text.trim()}');
+        await ref.putFile(_image!);
+        imageUrl = await ref.getDownloadURL();
+        await credential.user!.updatePhotoURL(imageUrl);
+      }
 
-        await credential.user!.updateDisplayName(_ctrlUsername.text);
+      await credential.user!.updateDisplayName(_ctrlUsername.text);
 
-        await addUserData(credential);
+      await addUserData(credential);
 
-        navigatorKey.currentState?.pushReplacement(
-            MaterialPageRoute(builder: ((context) => const EmailVerifyScreen())));
-     
+      navigatorKey.currentState?.pushReplacement(
+          MaterialPageRoute(builder: ((context) => const EmailVerifyScreen())));
+
       setState(() {
         loading = false;
       });
@@ -83,8 +81,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     User? user = FirebaseAuth.instance.currentUser;
     return user != null && user.emailVerified;
   }
-
-
 
   Future<void> addUserData(UserCredential credential) async {
     String userID = credential.user!.uid;
@@ -110,26 +106,43 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // AppLogo(width),
-                  profilePicture(),
-                  signInWithEmailPassword(width),
-                  loginButton(width),
-                  forgotPasswordText(),
-                  alreadyHaveAnAccountText(context)
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        DateTime currentTime = DateTime.now();
+        bool backBtnPressedTwice = _lastPressed != null &&
+            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+
+        if (backBtnPressedTwice) {
+          return true;
+        }
+
+        _lastPressed = currentTime;
+
+        ShowSnackBar snackBar = ShowSnackBar();
+        snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // AppLogo(width),
+                    profilePicture(),
+                    signInWithEmailPassword(width),
+                    loginButton(width),
+                    forgotPasswordText(),
+                    alreadyHaveAnAccountText(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -153,7 +166,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
-              
               ),
               height: 150,
               width: 150,
@@ -208,7 +220,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       onTap: loading
           ? null
           : () {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
             },
       child: Padding(
         padding: const EdgeInsets.only(top: 15),
@@ -385,7 +401,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   GestureDetector alreadyhaveAnAccountText(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/login',
+            (route) => false,
+          );
         },
         child: const Text("Already have an account?"));
   }

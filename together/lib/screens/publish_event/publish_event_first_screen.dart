@@ -27,7 +27,6 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   ShowSnackBar snackBar = ShowSnackBar();
   bool loading = false;
 
-
   List<String> categories = [
     'Art & Culture',
     'Music',
@@ -118,7 +117,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: myAppBar(context, true),
       body: loading
@@ -131,20 +130,30 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
           : SafeArea(
               child: Form(
                 key: _formKey,
-                child: ListView(
-                  children: <Widget>[
-                    title(width),
-                    textField(Icons.festival_outlined, 'Name of the Event', 1,
-                        _ctrlName),
-                    textField(
-                        Icons.description, 'Description', 4, _ctrlDescription),
-                    textFieldWithButtons(Icons.edit_calendar,
-                        'Start Date & Time', _ctrlStartDate, 0),
-                    textFieldWithButtons(Icons.edit_calendar, 'End Date & Time',
-                        _ctrlEndDate, 1),
-                    dropDownMenu(),
-                    nextButton(context),
-                  ],
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: Column(
+                    children: [
+                      title(width),
+                      Expanded(
+                        child: ListView(
+                          children: <Widget>[
+                            textField(Icons.festival_outlined,
+                                'Name of the Event', 1, _ctrlName),
+                            textField(Icons.description, 'Description', 4,
+                                _ctrlDescription),
+                            textFieldWithButtons(Icons.edit_calendar,
+                                'Start Date & Time', _ctrlStartDate, 0),
+                            textFieldWithButtons(Icons.edit_calendar,
+                                'End Date & Time', _ctrlEndDate, 1),
+                            dropDownMenu(),
+                            nextButton(context),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

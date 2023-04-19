@@ -17,11 +17,12 @@ class EmailVerifyScreen extends StatefulWidget {
 class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
   bool isEmailVerified = false;
   Timer? timer;
+  DateTime? _lastPressed;
   bool isLoading = true;
   User? user = FirebaseAuth.instance.currentUser;
+  var ctime;
   @override
   void initState() {
-    
     super.initState();
     isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
     if (!isEmailVerified) {
@@ -31,7 +32,11 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
         checkEmailVerified();
       });
     } else {
-      Navigator.pushReplacementNamed(context, '/select_category');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/select_category',
+        (route) => false,
+      );
     }
   }
 
@@ -43,17 +48,16 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
 
     if (isEmailVerified) {
       timer?.cancel();
-      navigatorKey.currentState?.pushReplacement(
-          MaterialPageRoute(builder: ((context) => const SelectCategoryScreen())));
+      navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => SelectCategoryScreen()),
+          (route) => false);
     }
   }
 
   @override
   void dispose() async {
-  
     super.dispose();
     timer?.cancel();
-    
   }
 
   Future sendVerificationEmail() async {
@@ -72,6 +76,18 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
     double height = MediaQuery.of(context).size.height;
     return WillPopScope(
       onWillPop: () async {
+        DateTime currentTime = DateTime.now();
+        bool backBtnPressedTwice = _lastPressed != null &&
+            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+
+        if (backBtnPressedTwice) {
+          return true;
+        }
+
+        _lastPressed = currentTime;
+
+        ShowSnackBar snackBar = ShowSnackBar();
+        snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
         return false;
       },
       child: Scaffold(

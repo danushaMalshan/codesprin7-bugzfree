@@ -2,6 +2,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/utils/colors.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -13,9 +14,9 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _ctrlEmail = TextEditingController();
   final TextEditingController _ctrlPassword = TextEditingController();
-
+  DateTime? _lastPressed;
   final ShowSnackBar _snackBar = ShowSnackBar();
-
+  var ctime;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _loading = false;
 
@@ -24,14 +25,18 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         _loading = true;
       });
-       await _auth
+      await _auth
           .signInWithEmailAndPassword(
               email: _ctrlEmail.text.trim(),
               password: _ctrlPassword.text.trim())
           .then((value) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+        );
       });
-      
+
       setState(() {
         _loading = false;
       });
@@ -56,42 +61,59 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: SizedBox(
-        width: width,
-        height: height,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  appLogo(width),
-                  customSignupButton(
-                      Colors.black87,
-                      'assets/icons/apple_logo.png',
-                      'Continue with Apple',
-                      Colors.white),
-                  customSignupButton(
-                      Colors.blue.shade600,
-                      'assets/icons/facebook.png',
-                      'Continue with Facebook',
-                      Colors.white),
-                  customSignupButton(
-                    Colors.grey.withOpacity(0.5),
-                    'assets/icons/google.png',
-                    'Continue with Google',
-                    const Color.fromARGB(255, 1, 121, 226),
-                  ),
-                  orText(),
-                  signInWithEmailPassword(width),
-                  loginButton(width),
-                  forgotPasswordText(),
-                  dontHaveAnAccountText(context)
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        DateTime currentTime = DateTime.now();
+        bool backBtnPressedTwice = _lastPressed != null &&
+            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+
+        if (backBtnPressedTwice) {
+          return true;
+        }
+
+        _lastPressed = currentTime;
+
+        ShowSnackBar snackBar = ShowSnackBar();
+        snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        body: SizedBox(
+          width: width,
+          height: height,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    appLogo(width),
+                    customSignupButton(
+                        Colors.black87,
+                        'assets/icons/apple_logo.png',
+                        'Continue with Apple',
+                        Colors.white),
+                    customSignupButton(
+                        Colors.blue.shade600,
+                        'assets/icons/facebook.png',
+                        'Continue with Facebook',
+                        Colors.white),
+                    customSignupButton(
+                      Colors.grey.withOpacity(0.5),
+                      'assets/icons/google.png',
+                      'Continue with Google',
+                      const Color.fromARGB(255, 1, 121, 226),
+                    ),
+                    orText(),
+                    signInWithEmailPassword(width),
+                    loginButton(width),
+                    forgotPasswordText(),
+                    dontHaveAnAccountText(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -103,7 +125,11 @@ class _SignInScreenState extends State<SignInScreen> {
   GestureDetector dontHaveAnAccountText(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacementNamed(context, '/sign_up');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/sign_up',
+          (route) => false,
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 15),
