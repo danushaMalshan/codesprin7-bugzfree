@@ -37,8 +37,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         loading = true;
       });
       await FirebaseAuth.instance.signOut().then((value) {
-        Navigator.of(context, rootNavigator: true).pushReplacement(
-            MaterialPageRoute(builder: (context) => const SignInScreen()));
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
       });
 
       setState(() {

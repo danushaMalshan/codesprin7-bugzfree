@@ -23,12 +23,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   ShowSnackBar snackBar = ShowSnackBar();
-  
+
   List<int> randomNumbers = [];
 
   @override
   void initState() {
-  
     super.initState();
   }
 
@@ -52,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         width: width,
         height: height,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -92,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 DateTime today = DateTime.now();
                 List<int> userCategories =
                     userDocument.data()?['categories'].cast<int>();
-               
+
                 QuerySnapshot eventDocuments = await FirebaseFirestore.instance
                     .collection('events')
                     .where('category', whereIn: userCategories)
@@ -140,7 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: events.length,
                       itemBuilder: ((context, index) => GestureDetector(
                             onTap: () {
-                              
                               DocumentReference docRef = FirebaseFirestore
                                   .instance
                                   .collection('categories')
@@ -470,44 +468,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  TextField searchBar(BuildContext context) {
-    return TextField(
-      readOnly: true,
-      onTap: () {
-        customDevelopmentShowDialog(context,
-            'Sorry! This feature is under development and will be available in future updates');
-      },
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: AppColor.primaryColor, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
+  Widget searchBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: TextField(
+        readOnly: true,
+        onTap: () {
+          customDevelopmentShowDialog(context,
+              'Sorry! This feature is under development and will be available in future updates');
+        },
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: AppColor.primaryColor, width: 1)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: AppColor.primaryColor, width: 1)),
-        fillColor: Colors.white.withOpacity(0.7),
-        filled: true,
-        contentPadding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
-        suffixIcon: Icon(
-          Icons.tune,
-          color: AppColor.primaryColor.withOpacity(0.4),
-          size: 30,
+            borderSide:
+                const BorderSide(color: AppColor.primaryColor, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide:
+                  const BorderSide(color: AppColor.primaryColor, width: 1)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide:
+                  const BorderSide(color: AppColor.primaryColor, width: 1)),
+          fillColor: Colors.white.withOpacity(0.7),
+          filled: true,
+          contentPadding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
+          suffixIcon: Icon(
+            Icons.tune,
+            color: AppColor.primaryColor.withOpacity(0.4),
+            size: 30,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppColor.primaryColor.withOpacity(0.4),
+            size: 30,
+          ),
+          hintText: 'Search any Event',
+          hintStyle: TextStyle(
+            fontSize: 20,
+            color: AppColor.primaryColor.withOpacity(0.4),
+          ),
         ),
-        prefixIcon: Icon(
-          Icons.search,
-          color: AppColor.primaryColor.withOpacity(0.4),
-          size: 30,
-        ),
-        hintText: 'Search any Event',
-        hintStyle: TextStyle(
-          fontSize: 20,
-          color: AppColor.primaryColor.withOpacity(0.4),
-        ),
+        cursorColor: Colors.black,
       ),
-      cursorColor: Colors.black,
     );
   }
 }
