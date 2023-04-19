@@ -7,10 +7,10 @@ class CategoryModel {
   int value;
 
   CategoryModel({
-    required this.id,
-    required this.image,
-    required this.name,
-    required this.value,
+     required this.id,
+     required this.image,
+     required this.name,
+     required this.value,
   });
 
   factory CategoryModel.fromFirestore(DocumentSnapshot doc) {

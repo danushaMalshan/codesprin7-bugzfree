@@ -15,66 +15,68 @@ class _RemindersState extends State<Reminders> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-        appBar: myAppBar(context, false),
-        body: undeDevelopment
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Image.asset(
-                      'assets/images/repair.png',
-                      height: 70,
-                      width: 70,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        top: 20.0,
+    return SafeArea(
+      child: Scaffold(
+          appBar: myAppBar(context, false),
+          body: undeDevelopment
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                      child: Text(
-                        'Sorry! This Screen is under development and will be available in future updates',
-                        style: TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
+                      Image.asset(
+                        'assets/images/repair.png',
+                        height: 70,
+                        width: 70,
                       ),
-                    ),
-                  ],
-                ),
-              )
-            : SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        'Reminders',
-                        style: messagePreviewTextStyle(),
-                      ),
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Column(
-                            children: [
-                              customReminderTile(width),
-                              customReminderTile(width),
-                              customReminderTile(width),
-                              customReminderTile(width),
-                              customReminderTile(width),
-                            ],
-                          ),
+                      const Padding(
+                        padding: EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          top: 20.0,
+                        ),
+                        child: Text(
+                          'Sorry! This Screen is under development and will be available in future updates',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ));
+                    ],
+                  ),
+                )
+              : SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'Reminders',
+                          style: messagePreviewTextStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            child: Column(
+                              children: [
+                                customReminderTile(width),
+                                customReminderTile(width),
+                                customReminderTile(width),
+                                customReminderTile(width),
+                                customReminderTile(width),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+    );
   }
 
   Container customReminderTile(double width) {

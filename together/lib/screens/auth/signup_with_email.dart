@@ -58,8 +58,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
       await addUserData(credential);
 
-      navigatorKey.currentState?.pushReplacement(
-          MaterialPageRoute(builder: ((context) => const EmailVerifyScreen())));
+      navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: ((context) => EmailVerifyScreen(name:_ctrlUsername.text,email: _ctrlEmail.text))));
 
       setState(() {
         loading = false;
@@ -110,7 +110,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       onWillPop: () async {
         DateTime currentTime = DateTime.now();
         bool backBtnPressedTwice = _lastPressed != null &&
-            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+            currentTime.difference(_lastPressed!) < const Duration(seconds: 2);
 
         if (backBtnPressedTwice) {
           return true;
@@ -122,26 +122,28 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
         return false;
       },
-      child: Scaffold(
-        backgroundColor: const Color(0xFFFFFFFF),
-        body: SizedBox(
-          width: width,
-          height: height,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // AppLogo(width),
-                    profilePicture(),
-                    signInWithEmailPassword(width),
-                    loginButton(width),
-                    forgotPasswordText(),
-                    alreadyHaveAnAccountText(context)
-                  ],
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: const Color(0xFFFFFFFF),
+          body: SizedBox(
+            width: width,
+            height: height,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // AppLogo(width),
+                      profilePicture(),
+                      signInWithEmailPassword(width),
+                      loginButton(width),
+                      forgotPasswordText(),
+                      alreadyHaveAnAccountText(context)
+                    ],
+                  ),
                 ),
               ),
             ),

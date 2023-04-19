@@ -19,6 +19,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   final TextEditingController _ctrlDescription = TextEditingController();
   final TextEditingController _ctrlStartDate = TextEditingController();
   final TextEditingController _ctrlEndDate = TextEditingController();
+  final TextEditingController _ctrlTicketReservation = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -118,45 +119,52 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: myAppBar(context, true),
-      body: loading
-          ? const Center(
-              child: SpinKitWave(
-                color: AppColor.primaryColor,
-                size: 40,
-              ),
-            )
-          : SafeArea(
-              child: Form(
-                key: _formKey,
-                child: SizedBox(
-                  height: height,
-                  width: width,
-                  child: Column(
-                    children: [
-                      title(width),
-                      Expanded(
-                        child: ListView(
-                          children: <Widget>[
-                            textField(Icons.festival_outlined,
-                                'Name of the Event', 1, _ctrlName),
-                            textField(Icons.description, 'Description', 4,
-                                _ctrlDescription),
-                            textFieldWithButtons(Icons.edit_calendar,
-                                'Start Date & Time', _ctrlStartDate, 0),
-                            textFieldWithButtons(Icons.edit_calendar,
-                                'End Date & Time', _ctrlEndDate, 1),
-                            dropDownMenu(),
-                            nextButton(context),
-                          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: myAppBar(context, true),
+        body: loading
+            ? const Center(
+                child: SpinKitWave(
+                  color: AppColor.primaryColor,
+                  size: 40,
+                ),
+              )
+            : SafeArea(
+                child: Form(
+                  key: _formKey,
+                  child: SizedBox(
+                    height: height,
+                    width: width,
+                    child: Column(
+                      children: [
+                        title(width),
+                        Expanded(
+                          child: ListView(
+                            children: <Widget>[
+                              textField(Icons.festival_outlined,
+                                  'Name of the Event', 1, _ctrlName),
+                              textField(Icons.description, 'Description', 4,
+                                  _ctrlDescription),
+                              textField(
+                                  Icons.festival_outlined,
+                                  'Ticket Reservation Site Link',
+                                  1,
+                                  _ctrlTicketReservation),
+                              textFieldWithButtons(Icons.edit_calendar,
+                                  'Start Date & Time', _ctrlStartDate, 0),
+                              textFieldWithButtons(Icons.edit_calendar,
+                                  'End Date & Time', _ctrlEndDate, 1),
+                              dropDownMenu(),
+                              nextButton(context),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -182,6 +190,13 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             color: AppColor.primaryColor,
           ),
           enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
             borderSide: const BorderSide(
               width: 2,
@@ -234,9 +249,12 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
         width: 100,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: AppColor.primaryColor,
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-          ),
+              primary: AppColor.primaryColor,
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 2, color: AppColor.primaryColor),
+                borderRadius: BorderRadius.circular(20),
+              )),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               int category = categories.indexOf(dropdownValue!);
@@ -244,6 +262,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => PublishEventSecondScreen(
+                            ticketReservationLink: _ctrlTicketReservation.text,
                             description: _ctrlDescription.text,
                             eventName: _ctrlName.text,
                             startDate: startDateTime!,
@@ -252,7 +271,10 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                           )));
             }
           },
-          child: const Text('Next'),
+          child: const Text(
+            'Next',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
@@ -294,6 +316,13 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             color: AppColor.primaryColor,
           ),
           focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
             borderSide: const BorderSide(
               width: 2,
@@ -352,6 +381,13 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             color: AppColor.primaryColor,
           ),
           focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
             borderSide: const BorderSide(
               width: 2,

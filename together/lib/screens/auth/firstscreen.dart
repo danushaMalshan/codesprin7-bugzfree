@@ -11,36 +11,38 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreenState extends State<FirstScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          const SizedBox(
-            width: double.infinity,
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 50.0),
-            child: const Image(
-              image: AssetImage("assets/images/logo.jpeg"),
-              height: 250,
-              width: 250,
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            const SizedBox(
+              width: double.infinity,
             ),
-          ),
-          const SizedBox(
-            height: 200,
-          ),
-          loginButtons(
-            'Sign up',
-            const Color(0xffd9d9d9),
-            AppColor.primaryColor,
-          ),
-          loginButtons(
-            'Log in',
-             AppColor.primaryColor,
-            const Color(0xffd9d9d9),
-          ),
-        ],
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 50.0),
+              child: const Image(
+                image: AssetImage("assets/images/logo.jpeg"),
+                height: 250,
+                width: 250,
+              ),
+            ),
+            const SizedBox(
+              height: 200,
+            ),
+            loginButtons(
+              'Sign up',
+              const Color(0xffd9d9d9),
+              AppColor.primaryColor,
+            ),
+            loginButtons(
+              'Log in',
+               AppColor.primaryColor,
+              const Color(0xffd9d9d9),
+            ),
+          ],
+        ),
       ),
     );
   }

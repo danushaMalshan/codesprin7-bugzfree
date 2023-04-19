@@ -1,36 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventModel {
-  String id;
-  String name;
-  String organizerId;
-  String description;
+  String? id;
+  String? name;
+  String? organizerId;
+  String? description;
   DateTime startDate;
   DateTime endDate;
   int category;
   double latitude;
   double longitude;
-  String coverImage;
-  List<dynamic> images;
+  String? coverImage;
+  List<dynamic>? images;
   bool isApprove;
   String location;
-  List<dynamic> tickets;
+  String? ticketReservationLink;
+  List<dynamic>? tickets;
 
   EventModel(
-      {required this.id,
-      required this.name,
-      required this.organizerId,
-      required this.description,
+      {this.id,
+      this.name,
+      this.organizerId,
+      this.description,
       required this.startDate,
       required this.endDate,
       required this.category,
       required this.latitude,
       required this.longitude,
-      required this.coverImage,
-      required this.images,
+      this.coverImage,
+      this.images,
       required this.isApprove,
       required this.location,
-      required this.tickets});
+      required this.ticketReservationLink,
+      this.tickets});
 
   factory EventModel.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
@@ -48,6 +50,7 @@ class EventModel {
         images: data['images'],
         isApprove: data['is_approve'],
         location: data['location'],
+        ticketReservationLink: data['ticket_reservation'],
         tickets: data['tickets']);
   }
 
@@ -66,6 +69,7 @@ class EventModel {
       'images': images,
       'is_approve': isApprove,
       'location': location,
+      'ticket_reservation': ticketReservationLink,
       'tickets': tickets
     };
   }

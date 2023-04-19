@@ -1,7 +1,12 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
+import 'package:together/global.dart';
 import 'package:together/utils/colors.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -16,7 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _ctrlPassword = TextEditingController();
   DateTime? _lastPressed;
   final ShowSnackBar _snackBar = ShowSnackBar();
-  var ctime;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _loading = false;
 
@@ -53,6 +58,49 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+      if (user != null) {
+        navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => const CustomNavigationBar(
+                      index: 2,
+                    )),
+            (route) => false);
+      }
+
+      setState(() {
+        _loading = false;
+      });
+    } on FirebaseException catch (e) {
+      _snackBar.showSnackaBar(context, e.message.toString(), null);
+     
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+    
+      _snackBar.showSnackaBar(context, e.toString(), null);
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
   bool _validate() {
     return (_ctrlPassword.text.isNotEmpty && _ctrlEmail.text.isNotEmpty);
   }
@@ -65,7 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
       onWillPop: () async {
         DateTime currentTime = DateTime.now();
         bool backBtnPressedTwice = _lastPressed != null &&
-            currentTime.difference(_lastPressed!) < Duration(seconds: 2);
+            currentTime.difference(_lastPressed!) < const Duration(seconds: 2);
 
         if (backBtnPressedTwice) {
           return true;
@@ -77,42 +125,51 @@ class _SignInScreenState extends State<SignInScreen> {
         snackBar.showSnackaBar(context, 'Press back again to exit', Colors.red);
         return false;
       },
-      child: Scaffold(
-        backgroundColor: const Color(0xFFFFFFFF),
-        body: SizedBox(
-          width: width,
-          height: height,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    appLogo(width),
-                    customSignupButton(
-                        Colors.black87,
-                        'assets/icons/apple_logo.png',
-                        'Continue with Apple',
-                        Colors.white),
-                    customSignupButton(
-                        Colors.blue.shade600,
-                        'assets/icons/facebook.png',
-                        'Continue with Facebook',
-                        Colors.white),
-                    customSignupButton(
-                      Colors.grey.withOpacity(0.5),
-                      'assets/icons/google.png',
-                      'Continue with Google',
-                      const Color.fromARGB(255, 1, 121, 226),
-                    ),
-                    orText(),
-                    signInWithEmailPassword(width),
-                    loginButton(width),
-                    forgotPasswordText(),
-                    dontHaveAnAccountText(context)
-                  ],
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: const Color(0xFFFFFFFF),
+          body: SizedBox(
+            width: width,
+            height: height,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      appLogo(width),
+                      customSignupButton(
+                          Colors.black87,
+                          'assets/icons/apple_logo.png',
+                          'Continue with Apple',
+                          Colors.white, () {
+                        customDevelopmentShowDialog(context,
+                            'Sorry! This feature is under development. for now, you can use the sign in with the email & sign in with Google');
+                      }),
+                      customSignupButton(
+                          Colors.blue.shade600,
+                          'assets/icons/facebook.png',
+                          'Continue with Facebook',
+                          Colors.white, () {
+                        customDevelopmentShowDialog(context,
+                            'Sorry! This feature is under development. for now, you can use the sign in with the email & sign in with Google');
+                      }),
+                      customSignupButton(
+                          Colors.grey.withOpacity(0.5),
+                          'assets/icons/google.png',
+                          'Continue with Google',
+                          const Color.fromARGB(255, 1, 121, 226), () {
+                        signInWithGoogle();
+                      }),
+                      orText(),
+                      signInWithEmailPassword(width),
+                      loginButton(width),
+                      forgotPasswordText(),
+                      dontHaveAnAccountText(context)
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -121,6 +178,8 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+ 
 
   GestureDetector dontHaveAnAccountText(BuildContext context) {
     return GestureDetector(
@@ -276,12 +335,13 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Padding customSignupButton(
-      Color color, String image, String title, Color txtColor) {
+      Color color, String image, String title, Color txtColor, var onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
       child: SizedBox(
         height: 60,
         child: ListTile(
+          onTap: onTap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
