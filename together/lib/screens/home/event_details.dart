@@ -1,46 +1,21 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:together/components/appbar.dart';
 import 'dart:async';
 
-import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/models/event_model.dart';
 import 'package:together/utils/colors.dart';
 
 class EventDetailsScreen extends StatefulWidget {
-  EventDetailsScreen(
-      {Key? key,
-      required this.eventName,
-      required this.description,
-      required this.organizerId,
-      required this.startDate,
-      required this.endDate,
-      required this.latitude,
-      required this.longitude,
-      required this.images,
-      required this.category,
-      required this.coverImage,
-      required this.location,
-      required this.tickets})
-      : super(key: key);
+ const EventDetailsScreen({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();
-  String eventName;
-  String description;
-  String organizerId;
-  DateTime startDate;
-  DateTime endDate;
-  double latitude;
-  double longitude;
-  List<dynamic> images;
-  int category;
-  String coverImage;
-  String location;
-  List<dynamic> tickets;
+ final EventModel event;
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen>
@@ -48,26 +23,28 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   late TabController _tabController;
   int selectedIndex = 0;
   String location = '';
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   String? duration;
   CameraPosition? _kGooglePlex;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_onTabSelect);
-    Duration duration = widget.endDate.difference(widget.startDate);
+    Duration duration =
+        widget.event.endDate.difference(widget.event.startDate);
+    String daysText = duration.inDays > 1 ? 'Days' : 'Day';
+    String hourText = duration.inHours > 1 ? 'Hours' : 'Hour';
     if (duration.inDays > 0) {
       this.duration =
-          "${duration.inDays} days, ${duration.inHours.remainder(24)}:${duration.inMinutes.remainder(60)}:${duration.inSeconds.remainder(60)}";
+          "${duration.inDays} $daysText, ${duration.inHours.remainder(24)} $hourText";
     } else if (duration.inHours > 0) {
-      this.duration =
-          "${duration.inHours}:${duration.inMinutes.remainder(60)}:${duration.inSeconds.remainder(60)}";
+      this.duration = "${duration.inHours} $hourText";
     }
     _kGooglePlex = CameraPosition(
-      target: LatLng(widget.latitude, widget.longitude),
+      target: LatLng(widget.event.latitude, widget.event.longitude),
       zoom: 14.4746,
     );
     _markerAdd();
@@ -77,8 +54,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     setState(() {
       _markers.add(
         Marker(
-          markerId: MarkerId('${widget.eventName}'),
-          position: LatLng(widget.latitude, widget.longitude),
+          markerId: MarkerId(widget.event.name),
+          position: LatLng(widget.event.latitude, widget.event.longitude),
           infoWindow: InfoWindow(
             title: location,
           ),
@@ -90,7 +67,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   void _onTabSelect() {
     setState(() {
       selectedIndex = _tabController.index;
-      print(selectedIndex);
+      
     });
   }
 
@@ -102,7 +79,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   }
 
   String formatDate() {
-    DateTime date = DateTime.parse('${widget.startDate}');
+    DateTime date = DateTime.parse('${widget.event.startDate}');
     String formattedDate = DateFormat('d MMMM y').format(date);
     return formattedDate;
   }
@@ -119,14 +96,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              EventBanner(height, width),
-              EventName(),
-              CustomTabBar(),
-              EventButtons(),
-              EventDescription(),
-              EventPhotos(context),
-              EventLocationInMap(width),
-              TicketReservationsButton(width),
+              eventBanner(height, width),
+              eventName(),
+              customTabBar(),
+              eventButtons(),
+              eventDescription(),
+              eventPhotos(context),
+              eventLocationInMap(width),
+              ticketReservationsButton(width),
             ],
           ),
         ),
@@ -134,36 +111,36 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     );
   }
 
-  Container TicketReservationsButton(double width) {
+  Container ticketReservationsButton(double width) {
     return Container(
       height: 75,
-      margin: EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 40),
       width: width - 150,
       child: ElevatedButton(
         onPressed: () {},
-        child: Text(
-          'Ticket Reservations',
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
-        ),
         style: ElevatedButton.styleFrom(
           primary: AppColor.primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
         ),
+        child:const Text(
+          'Ticket Reservations',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18),
+        ),
       ),
     );
   }
 
-  Column EventLocationInMap(double width) {
+  Column eventLocationInMap(double width) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Location',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -172,7 +149,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         ),
         Container(
           clipBehavior: Clip.hardEdge,
-          margin: EdgeInsets.only(top: 30, bottom: 40),
+          margin: const EdgeInsets.only(top: 30, bottom: 40),
           height: 200,
           width: width,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
@@ -189,14 +166,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     );
   }
 
-  Column EventPhotos(BuildContext context) {
+  Column eventPhotos(BuildContext context) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
+                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 15),
             child: Text(
               'Event  Photos',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -214,40 +191,40 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               enableInfiniteScroll: true,
               reverse: false,
               autoPlay: true,
-              autoPlayInterval: Duration(seconds: 5),
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
+              autoPlayInterval: const Duration(seconds: 5),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
               autoPlayCurve: Curves.fastOutSlowIn,
               enlargeCenterPage: true,
               enlargeFactor: 0.2,
               scrollDirection: Axis.horizontal,
             ),
             itemBuilder: ((context, index, realIndex) {
-              return SliderImage(context, widget.images[index]);
+              return sliderImage(context, widget.event.images[index]);
             }),
-            itemCount: widget.images.length,
+            itemCount: widget.event.images.length,
           ),
         )
       ],
     );
   }
 
-  Container SliderImage(BuildContext context, String img) {
+  Container sliderImage(BuildContext context, String img) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 3.0),
+      margin: const EdgeInsets.symmetric(horizontal: 3.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover)),
     );
   }
 
-  Column EventDescription() {
+  Column eventDescription() {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             child: Text(
               'Event  Description',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -259,7 +236,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             child: Text(
-              widget.description,
+              widget.event.description,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -271,7 +248,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     );
   }
 
-  Padding EventButtons() {
+  Padding eventButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Row(
@@ -284,18 +261,18 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                 padding: const EdgeInsets.only(right: 10),
                 child: ElevatedButton(
                   onPressed: () {},
-                  child: Text(
-                    'Add Reminder',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
-                  ),
                   style: ElevatedButton.styleFrom(
                     primary: AppColor.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
+                  ),
+                  child: const Text(
+                    'Add Reminder',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
                   ),
                 ),
               ),
@@ -309,19 +286,19 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                 padding: const EdgeInsets.only(left: 10),
                 child: ElevatedButton(
                   onPressed: () {},
-                  child: Text(
-                    'Contact Organizer',
-                    style: TextStyle(
-                        color: AppColor.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
-                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                         side:
-                            BorderSide(color: AppColor.primaryColor, width: 2)),
+                            const BorderSide(color: AppColor.primaryColor, width: 2)),
+                  ),
+                  child: const Text(
+                    'Contact Organizer',
+                    style: TextStyle(
+                        color: AppColor.primaryColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
                   ),
                 ),
               ),
@@ -332,39 +309,40 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     );
   }
 
-  Align EventName() {
+  Align eventName() {
     return Align(
         alignment: Alignment.centerLeft,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: Text(
-            widget.eventName,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            widget.event.name,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ));
   }
 
-  Container CustomTabBar() {
+  Container customTabBar() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 30),
+      margin: const EdgeInsets.symmetric(horizontal: 30),
       height: 200,
       decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.5),
           borderRadius: BorderRadius.circular(30)),
+      clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
           TabBar(
-            indicator: BoxDecoration(
+            indicator: const BoxDecoration(
               color: AppColor.primaryColor,
               // Set selected tab color here
             ),
             // labelStyle: TextStyle(color: AppColor.primaryColor),
             unselectedLabelColor: AppColor.primaryColor,
             controller: _tabController,
-            labelPadding: EdgeInsets.symmetric(vertical: 15),
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-            tabs: [
+            labelPadding: const EdgeInsets.symmetric(vertical: 15),
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            tabs: const [
               Tab(
                 text: "Date",
                 icon: Icon(Icons.calendar_month),
@@ -387,40 +365,39 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  CustomTabView(formatDate()),
-                  CustomTabView(
-                      "${DateFormat('h:mm a').format(widget.startDate)} Onwards"),
-                  CustomTabView(widget.location),
-                  CustomTabView(
-                      "${widget.tickets[0]['name']} - Rs. ${widget.tickets[0]['price']}/="),
-                  CustomTabView(this.duration ?? ''),
+                  customTabView(formatDate()),
+                  customTabView(
+                      "${DateFormat('h:mm a').format(widget.event.startDate)} Onwards"),
+                  customTabView(widget.event.location),
+                  customTabView(
+                      "${widget.event.tickets[0]['name']} - Rs. ${widget.event.tickets[0]['price']}/="),
+                  customTabView(duration ?? ''),
                 ],
               ),
             ),
           ),
         ],
       ),
-      clipBehavior: Clip.hardEdge,
     );
   }
 
-  Center CustomTabView(String text) {
+  Center customTabView(String text) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.bookmark,
             color: Colors.white,
             size: 27,
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontSize: 30, fontWeight: FontWeight.w500),
           )
         ],
@@ -428,12 +405,12 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     );
   }
 
-  Container EventBanner(double height, double width) {
-    return Container(
+  SizedBox eventBanner(double height, double width) {
+    return SizedBox(
       width: width,
       height: 200,
       child: Image.network(
-        widget.coverImage,
+        widget.event.coverImage,
         fit: BoxFit.cover,
       ),
     );

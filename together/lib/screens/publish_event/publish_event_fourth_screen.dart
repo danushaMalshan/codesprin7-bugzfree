@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +14,7 @@ import 'package:together/utils/colors.dart';
 import 'dart:math';
 
 class PublishEventFourthScreen extends StatefulWidget {
-  PublishEventFourthScreen(
+ const PublishEventFourthScreen(
       {Key? key,
       required this.eventName,
       required this.description,
@@ -27,14 +25,14 @@ class PublishEventFourthScreen extends StatefulWidget {
       required this.category,
       required this.location})
       : super(key: key);
-  String eventName;
-  String description;
-  DateTime startDate;
-  DateTime endDate;
-  List<Map<String, dynamic>> tickets;
-  LatLng latLng;
-  int category;
-  String location;
+ final String eventName;
+ final String description;
+ final DateTime startDate;
+ final DateTime endDate;
+ final List<Map<String, dynamic>> tickets;
+ final LatLng latLng;
+ final int category;
+ final String location;
   @override
   State<PublishEventFourthScreen> createState() =>
       _PublishEventFourthScreenState();
@@ -44,13 +42,13 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
   File? _coverImage;
   final _picker = ImagePicker();
   bool loading = false;
-  List<File> _images = [];
-  List<String> _imagesUrl = [];
-  List<File>? _pickedImage;
+  final List<File> _images = [];
+  final List<String> _imagesUrl = [];
+
   ShowSnackBar snackBar = ShowSnackBar();
   String? _coverImgUrl;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<void> _addEventToREview(BuildContext context) async {
@@ -58,20 +56,20 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
       setState(() {
         loading = true;
       });
-      User? _user = _auth.currentUser;
-      if (_user != null) {
-        //upload cover image
+      User? user = _auth.currentUser;
+      if (user != null) {
+        
         final random = Random();
         final randomNumber = random.nextInt(10000);
         final coverRef = _storage.ref().child(
-            'images/events/${_user.email}/${widget.eventName}$randomNumber/cover_image');
+            'images/events/${user.email}/${widget.eventName}$randomNumber/cover_image');
         await coverRef.putFile(_coverImage!);
         final coverImageUrl = await coverRef.getDownloadURL();
         _coverImgUrl = coverImageUrl;
 
         for (int i = 0; i < _images.length; i++) {
           final ref = _storage.ref().child(
-              'images/events/${_user.email}/${widget.eventName}$randomNumber/img$i');
+              'images/events/${user.email}/${widget.eventName}$randomNumber/img$i');
           await ref.putFile(_images[i]);
           final imageUrl = await ref.getDownloadURL();
           _imagesUrl.add(imageUrl);
@@ -80,15 +78,15 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
         EventModel event = EventModel(
             id: '',
             name: widget.eventName,
-            organizer_id: _user.uid,
+            organizerId: user.uid,
             description: widget.description,
-            start_date: widget.startDate,
-            end_date: widget.endDate,
+            startDate: widget.startDate,
+            endDate: widget.endDate,
             category: widget.category,
             latitude: widget.latLng.latitude,
             longitude: widget.latLng.longitude,
-            cover_image: _coverImgUrl!,
-            is_approve: false,
+            coverImage: _coverImgUrl!,
+            isApprove: false,
             images: _imagesUrl,
             location: widget.location,
             tickets: widget.tickets);
@@ -122,10 +120,10 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
     return Scaffold(
       appBar: myAppBar(context, true),
       body: loading
-          ? Center(
+          ? const Center(
               child: SpinKitWave(
                 color: AppColor.primaryColor,
-                size: 50,
+                size: 40,
               ),
             )
           : SizedBox(
@@ -133,8 +131,8 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
               height: height,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
                     child: Text(
                       'Select the cover image for your event',
                       style: TextStyle(
@@ -144,7 +142,7 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     width: width,
                     height: height / 4,
                     decoration: BoxDecoration(
@@ -173,8 +171,8 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
                             ),
                           ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
                     child: Text(
                       'Add other images',
                       style: TextStyle(
@@ -189,13 +187,13 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
                           const EdgeInsets.only(left: 20, right: 10, top: 20),
                       child: GridView.builder(
                         itemCount: _images.length + 1,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: 3 / 4,
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15,
                             crossAxisCount: 3),
                         itemBuilder: (context, index) => Container(
-                          margin: EdgeInsets.only(right: 10),
+                          margin: const EdgeInsets.only(right: 10),
                           width: width / 3 - 20,
                           height: height / 4,
                           decoration: BoxDecoration(
@@ -204,14 +202,14 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
                           child: index == _images.length
                               ? IconButton(
                                   onPressed: () async {
-                                    File _img;
+                                    File img;
                                     final pickedFile = await _picker.pickImage(
                                         source: ImageSource.gallery,
                                         imageQuality: 50);
 
-                                    _img = File(pickedFile!.path);
+                                    img = File(pickedFile!.path);
                                     setState(() {
-                                      _images.add(_img);
+                                      _images.add(img);
                                     });
                                   },
                                   icon: Icon(
@@ -242,14 +240,14 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
                           style: ElevatedButton.styleFrom(
                               primary: AppColor.primaryColor,
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(
+                                side: const BorderSide(
                                     width: 2, color: AppColor.primaryColor),
                                 borderRadius: BorderRadius.circular(10),
                               )),
                           onPressed: () {
                             _addEventToREview(context);
                           },
-                          child: Text(
+                          child: const Text(
                             'Add Event to Review',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),

@@ -12,7 +12,7 @@ PreferredSize myAppBar(BuildContext context, bool isBackButtonAvailable) {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios_new,
                     color: Colors.black,
                   )))

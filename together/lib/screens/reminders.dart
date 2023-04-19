@@ -10,109 +10,76 @@ class Reminders extends StatefulWidget {
 }
 
 class _RemindersState extends State<Reminders> {
+  bool undeDevelopment = true;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    // return Scaffold(
-    //   appBar: myAppBar(),
-    //   body: SafeArea(
-    //     child: Column(
-    //       children: <Widget>[
-    //         Center(
-    //           child: Container(
-    //             margin: const EdgeInsets.only(
-    //                 left: 10.0, top: 20.0, right: 10.0, bottom: 0.0),
-    //             height: 70.0,
-    //             child: Text(
-    //               'Reminders',
-    //               style: messagePreviewTextStyle(),
-    //             ),
-    //           ),
-    //         ),
-    //         Container(
-    //           height: height - 208,
-    //           child: ListView(
-    //             children: [
-    //               Container(
-    //                 margin: const EdgeInsets.only(
-    //                     left: 20.0, top: 0.0, right: 20.0, bottom: 10.0),
-    //                 decoration: BoxDecoration(
-    //                   border: Border.all(width: 1),
-    //                   borderRadius: BorderRadius.circular(10.0),
-    //                 ),
-    //                 child: Column(
-    //                   children: <Widget>[
-    //                     ListTile(
-    //                       title: Text('Bentota Beach Fiesta'),
-    //                       trailing: Icon(
-    //                         Icons.delete,
-    //                         color: AppColor.primaryColor,
-    //                       ),
-    //                     ),
-    //                     Row(
-    //                       children: <Widget>[
-    //                         Container(
-    //                           child: Column(
-    //                             children: <Widget>[
-    //                               Text('Date: '),
-    //                               Text('Time: '),
-    //                             ],
-    //                           ),
-    //                         ),
-
-    //                       ],
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
-
-        appBar: myAppBar(context,true),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  'Reminders',
-                  style: messagePreviewTextStyle(),
-                ),
-
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      children: [
-                        CustomReminderTile(width),
-                        CustomReminderTile(width),
-                        CustomReminderTile(width),
-                        CustomReminderTile(width),
-                        CustomReminderTile(width),
-                      ],
+        appBar: myAppBar(context, false),
+        body: undeDevelopment
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
+                    Image.asset(
+                      'assets/images/repair.png',
+                      height: 70,
+                      width: 70,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 20.0,
+                      ),
+                      child: Text(
+                        'Sorry! This Screen is under development and will be available in future updates',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 ),
               )
-            ],
-          ),
-        ));
+            : SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        'Reminders',
+                        style: messagePreviewTextStyle(),
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            children: [
+                              customReminderTile(width),
+                              customReminderTile(width),
+                              customReminderTile(width),
+                              customReminderTile(width),
+                              customReminderTile(width),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ));
   }
 
-  Container CustomReminderTile(double width) {
+  Container customReminderTile(double width) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       width: width,
       height: 130,
       decoration: BoxDecoration(
@@ -126,17 +93,17 @@ class _RemindersState extends State<Reminders> {
             child: Padding(
               padding: const EdgeInsets.only(left: 20, top: 5, right: 10),
               child: Row(
-                children: [
+                children: const [
                   Text(
                     'Bentota Beach Fiesta',
-                    style: TextStyle(fontSize: 20, color: AppColor.primaryColor),
+                    style:
+                        TextStyle(fontSize: 20, color: AppColor.primaryColor),
                   ),
                   Spacer(),
                   Icon(Icons.delete)
                 ],
               ),
             ),
-
           ),
           Expanded(
             flex: 2,
@@ -149,7 +116,7 @@ class _RemindersState extends State<Reminders> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text('Date : March 25'),
                         Text('Time :8.30 pm onward'),
                       ],
@@ -161,8 +128,8 @@ class _RemindersState extends State<Reminders> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
+                        const Padding(
+                          padding: EdgeInsets.only(right: 5),
                           child: Text(
                             'HH : MM : SS',
                             style: TextStyle(fontSize: 12),
@@ -170,7 +137,7 @@ class _RemindersState extends State<Reminders> {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
+                          children: const [
                             Icon(
                               Icons.av_timer_outlined,
                               size: 35,
@@ -191,7 +158,6 @@ class _RemindersState extends State<Reminders> {
                       ],
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -202,18 +168,17 @@ class _RemindersState extends State<Reminders> {
   }
 }
 
-Container reminderTile(String title, String sub1,String sub2){
+Container reminderTile(String title, String sub1, String sub2) {
   return Container(
-    padding: const EdgeInsets.symmetric(
-        vertical: 10.0, horizontal: 10.0),
-    margin: const EdgeInsets.only(
-        top: 20.0, left: 30.0, right: 30.0, bottom: 0.0),
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+    margin:
+        const EdgeInsets.only(top: 20.0, left: 30.0, right: 30.0, bottom: 0.0),
     decoration: BoxDecoration(
       color: const Color(0xffBEF1FF),
       borderRadius: BorderRadius.circular(10.0),
       border: Border.all(
         width: 3,
-        color:  AppColor.primaryColor,
+        color: AppColor.primaryColor,
       ),
     ),
     child: Column(
@@ -239,8 +204,8 @@ Container reminderTile(String title, String sub1,String sub2){
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8.0, horizontal: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

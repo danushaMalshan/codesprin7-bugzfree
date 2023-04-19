@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:together/components/appbar.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/utils/colors.dart';
 
@@ -16,7 +13,7 @@ class SelectCategoryScreen extends StatefulWidget {
 
 class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   ShowSnackBar snackBar = ShowSnackBar();
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
   bool loading = false;
   List<String> selectedCategories = [];
@@ -84,7 +81,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
@@ -120,7 +116,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                     onPressed: () async {
                       await _addSelectedCategories();
                     },
-                    child: Text(
+                    child: const Text(
                       'Done',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -135,8 +131,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 0, bottom: 0),
+              const Padding(
+                padding: EdgeInsets.only(top: 0, bottom: 0),
                 child: Text(
                   'SELECT CATEGORIES',
                   style: TextStyle(
@@ -145,8 +141,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                       fontSize: 25),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 15),
                 child: Text(
                   'Please select a minimum of 3 categories',
                   style: TextStyle(
@@ -158,12 +154,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
               Expanded(
                 child: GridView.builder(
                     itemCount: category.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 3 / 4,
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
                         crossAxisCount: 3),
-                    itemBuilder: (context, index) => CategoryCard(
+                    itemBuilder: (context, index) => categoryCard(
                             width, category[index][1], category[index][0], () {
                           setState(() {
                             if (category[index][3] == true) {
@@ -189,7 +185,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         );
   }
 
-  InkWell CategoryCard(
+  InkWell categoryCard(
       double width, String image, String title, var onTap, bool tapped) {
     return InkWell(
       onTap: onTap,
@@ -211,7 +207,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
               height: 100,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  stops: [
+                  stops: const [
                     0.2,
                     0.8,
                   ],
@@ -236,7 +232,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),

@@ -3,20 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   String id;
   String username;
-  String user_id;
+  String userId;
   String email;
   String age;
-  bool is_admin;
+  bool isAdmin;
   String img;
-  List<int> categories;
+  List<dynamic> categories;
 
   UserModel(
       {required this.id,
       required this.username,
-      required this.user_id,
+      required this.userId,
       required this.email,
       required this.age,
-      required this.is_admin,
+      required this.isAdmin,
       required this.img,required this.categories});
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -24,10 +24,10 @@ class UserModel {
     return UserModel(
         id: doc.id,
         username: data['username'],
-        user_id: data['user_id'],
+        userId: data['user_id'],
         email: data['email'],
         age: data['age'],
-        is_admin: data['is_admin'],
+        isAdmin: data['is_admin'],
         img: data['img'],categories: data['categories']);
   }
 
@@ -35,10 +35,10 @@ class UserModel {
     return {
       'id': id,
       'username': username,
-      'user_id': user_id,
+      'user_id': userId,
       'email': email,
       'age': age,
-      'is_admin': is_admin,
+      'is_admin': isAdmin,
       'img': img,
       'categories':categories
     };

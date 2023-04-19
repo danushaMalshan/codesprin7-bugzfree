@@ -2,9 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/global.dart';
 import 'package:together/screens/select_category.dart';
@@ -24,13 +21,13 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
     if (!isEmailVerified) {
       sendVerificationEmail();
 
-      timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      timer = Timer.periodic(const Duration(seconds: 3), (timer) {
         checkEmailVerified();
       });
     } else {
@@ -47,13 +44,13 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
     if (isEmailVerified) {
       timer?.cancel();
       navigatorKey.currentState?.pushReplacement(
-          MaterialPageRoute(builder: ((context) => SelectCategoryScreen())));
+          MaterialPageRoute(builder: ((context) => const SelectCategoryScreen())));
     }
   }
 
   @override
   void dispose() async {
-    // TODO: implement dispose
+  
     super.dispose();
     timer?.cancel();
     
@@ -93,14 +90,14 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                     filterQuality: FilterQuality.low,
                   ),
                 ),
-                Text(
+                const Text(
                   'Email Verfication',
                   style: TextStyle(
                       color: AppColor.primaryColor,
                       fontSize: 37,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Padding(
@@ -124,14 +121,14 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                       style: ElevatedButton.styleFrom(
                           primary: AppColor.primaryColor,
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(
+                            side: const BorderSide(
                                 width: 2, color: AppColor.primaryColor),
                             borderRadius: BorderRadius.circular(10),
                           )),
                       onPressed: () {
                         sendVerificationEmail();
                       },
-                      child: Text(
+                      child: const Text(
                         'Resend',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
@@ -148,7 +145,7 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                       style: ElevatedButton.styleFrom(
                           primary: Colors.white,
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(
+                            side: const BorderSide(
                                 width: 2, color: AppColor.primaryColor),
                             borderRadius: BorderRadius.circular(10),
                           )),
@@ -157,7 +154,7 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                           await user!.delete();
                         }
                       },
-                      child: Text(
+                      child: const Text(
                         'Cancel',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,

@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:together/components/appbar.dart';
-import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:together/components/snack_bar.dart';
@@ -20,9 +17,8 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final TextEditingController _usernameController = TextEditingController();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   File? _image;
   User? user = FirebaseAuth.instance.currentUser;
@@ -34,7 +30,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   bool loading = false;
   @override
   void initState() {
-    // TODO: implement initState
+ 
     super.initState();
     _usernameController.text = user?.displayName ?? '';
   }
@@ -84,10 +80,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       resizeToAvoidBottomInset: false,
       appBar: myAppBar(context, true),
       body: loading
-          ? Center(
+          ? const Center(
               child: SpinKitWave(
                 color: AppColor.primaryColor,
-                size: 50,
+                size: 40,
               ),
             )
           : SingleChildScrollView(
@@ -95,9 +91,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 width: width,
                 height: height,
                 child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.all(18.0),
+                    child: Text(
                       'Let\'s change your credentials',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -108,7 +104,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 20.0, horizontal: 8.0),
-                    child: Container(
+                    child: SizedBox(
                       height: 300,
                       width: 300,
                       child: Stack(
@@ -116,7 +112,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           Container(
                             clipBehavior: Clip.hardEdge,
                             height: 300,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
                             child: _image == null
@@ -135,8 +131,16 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             bottom: 10.0,
                             right: 15.0,
                             child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30.0),
+                                border:
+                                    Border.all(width: 2.0, color: Colors.amber),
+                              ),
+                              height: 50.0,
+                              width: 50.0,
                               child: IconButton(
-                                icon: Icon(Icons.add_photo_alternate),
+                                icon: const Icon(Icons.add_photo_alternate),
                                 onPressed: () async {
                                   final pickedFile = await _picker.pickImage(
                                       source: ImageSource.gallery,
@@ -146,14 +150,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                   });
                                 },
                               ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30.0),
-                                border:
-                                    Border.all(width: 2.0, color: Colors.amber),
-                              ),
-                              height: 50.0,
-                              width: 50.0,
                             ),
                           ),
                         ],
@@ -195,12 +191,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     onPressed: () {
                       _updateUserDetails(context);
                     },
-                    child: Text('Done'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 40.0),
                       primary: const Color(0xff142867),
                     ),
+                    child: const Text('Done'),
                   ),
                   Container(
                     height: 500,

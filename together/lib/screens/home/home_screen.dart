@@ -2,16 +2,15 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:together/components/alert_dialog.dart';
 import 'package:together/components/appbar.dart';
-import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/models/category_model.dart';
 import 'package:together/models/event_model.dart';
-import 'package:together/screens/category_events.dart';
-import 'package:together/screens/event_details.dart';
+import 'package:together/screens/home/category_events.dart';
+import 'package:together/screens/home/event_details.dart';
 import 'package:together/utils/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,12 +23,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   ShowSnackBar snackBar = ShowSnackBar();
-  late String _randomId;
+  
   List<int> randomNumbers = [];
 
   @override
   void initState() {
-    // TODO: implement initState
+  
     super.initState();
   }
 
@@ -57,10 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SearchBar(),
-                TrendingList(width),
-                YouMayLikeList(width),
-                PreferredList(width)
+                searchBar(context),
+                trendingList(width),
+                youMayLikeList(width),
+                preferredList(width)
               ],
             ),
           ),
@@ -69,20 +68,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Column PreferredList(double width) {
+  Column preferredList(double width) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(top: 20, left: 0),
+            padding: EdgeInsets.only(top: 20, left: 0),
             child: Text(
               'Preferred',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        Container(
+        SizedBox(
           width: width,
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -90,13 +89,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   .doc(user?.uid)
                   .snapshots()
                   .asyncMap((userDocument) async {
+                DateTime today = DateTime.now();
                 List<int> userCategories =
                     userDocument.data()?['categories'].cast<int>();
-                print(userCategories);
+               
                 QuerySnapshot eventDocuments = await FirebaseFirestore.instance
                     .collection('events')
                     .where('category', whereIn: userCategories)
-                    .limit(1000)
+                    .where('is_approve', isEqualTo: true)
+                    .where('start_date', isGreaterThan: today)
+                    .limit(100)
                     .get();
                 return eventDocuments;
               }),
@@ -107,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container();
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return SpinKitCircle(
+                  return const SpinKitCircle(
                     color: AppColor.primaryColor,
                     size: 30,
                   );
@@ -117,10 +119,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       .map((doc) => EventModel.fromFirestore(doc))
                       .toList();
 
-                  if (events.length == 0) {
-                    return Center(
+                  if (events.isEmpty) {
+                    return const Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        padding: EdgeInsets.symmetric(vertical: 20),
                         child: Text(
                           'Events not added yet',
                           style: TextStyle(
@@ -134,11 +136,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: events.length,
                       itemBuilder: ((context, index) => GestureDetector(
                             onTap: () {
-                              var item = events[index];
+                              
                               DocumentReference docRef = FirebaseFirestore
                                   .instance
                                   .collection('categories')
@@ -148,24 +150,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => EventDetailsScreen(
-                                            tickets: item.tickets,
-                                            category: item.category,
-                                            coverImage: item.cover_image,
-                                            description: item.description,
-                                            endDate: item.end_date,
-                                            eventName: item.name,
-                                            images: item.images,
-                                            latitude: item.latitude,
-                                            location: item.location,
-                                            longitude: item.longitude,
-                                            organizerId: item.organizer_id,
-                                            startDate: item.start_date,
+                                            event: events[index],
                                           )));
                             },
                             child: Stack(
                               children: [
                                 Container(
-                                  margin: EdgeInsets.all(8),
+                                  margin: const EdgeInsets.all(8),
                                   width: width - 50,
                                   height: 200,
                                   decoration: BoxDecoration(
@@ -173,18 +164,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
                                         image: NetworkImage(
-                                            '${events[index].cover_image}')),
+                                            events[index].coverImage)),
                                   ),
                                 ),
                                 Positioned(
                                   bottom: 0,
                                   child: Container(
-                                    margin: EdgeInsets.all(8),
+                                    margin: const EdgeInsets.all(8),
                                     width: width - 55,
                                     height: 100,
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        stops: [
+                                        stops: const [
                                           0.2,
                                           0.8,
                                         ],
@@ -209,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding:
                                             const EdgeInsets.only(bottom: 10),
                                         child: Text(
-                                          '${events[index].name}',
-                                          style: TextStyle(
+                                          events[index].name,
+                                          style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
@@ -230,20 +221,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Column YouMayLikeList(double width) {
+  Column youMayLikeList(double width) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(top: 20, left: 0),
+            padding: EdgeInsets.only(top: 20, left: 0),
             child: Text(
               'You may Like',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        Container(
+        SizedBox(
             width: width,
             height: 140,
             child: StreamBuilder(
@@ -259,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container();
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return SpinKitCircle(
+                  return const SpinKitCircle(
                     color: AppColor.primaryColor,
                     size: 30,
                   );
@@ -282,13 +273,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CategoryEventsScreen()));
+                                    builder: (context) => CategoryEventsScreen(
+                                        id: categories[index].id,
+                                        name: categories[index].name,
+                                        image: categories[index].image,
+                                        value: categories[index].value)));
                           },
                           child: Stack(
                             children: [
                               Container(
-                                margin: EdgeInsets.all(8),
+                                margin: const EdgeInsets.all(8),
                                 width: 200,
                                 height: 140,
                                 decoration: BoxDecoration(
@@ -302,12 +296,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               Positioned(
                                 bottom: 0,
                                 child: Container(
-                                  margin: EdgeInsets.all(8),
+                                  margin: const EdgeInsets.all(8),
                                   width: 200,
                                   height: 100,
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      stops: [
+                                      stops: const [
                                         0.2,
                                         0.8,
                                       ],
@@ -332,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const EdgeInsets.only(bottom: 10),
                                       child: Text(
                                         categories[index].name,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
@@ -351,20 +345,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Column TrendingList(double width) {
+  Column trendingList(double width) {
     return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(top: 20, left: 0),
+            padding: EdgeInsets.only(top: 20, left: 0),
             child: Text(
               'Trending',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        Container(
+        SizedBox(
             width: width,
             height: 180,
             child: StreamBuilder(
@@ -380,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Container();
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return SpinKitCircle(
+                  return const SpinKitCircle(
                     color: AppColor.primaryColor,
                     size: 30,
                   );
@@ -404,13 +398,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CategoryEventsScreen()));
+                                    builder: (context) => CategoryEventsScreen(
+                                        id: categories[index].id,
+                                        name: categories[index].name,
+                                        image: categories[index].image,
+                                        value: categories[index].value)));
                           },
                           child: Stack(
                             children: [
                               Container(
-                                margin: EdgeInsets.all(8),
+                                margin: const EdgeInsets.all(8),
                                 width: 230,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
@@ -424,12 +421,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               Positioned(
                                 bottom: 0,
                                 child: Container(
-                                  margin: EdgeInsets.all(8),
+                                  margin: const EdgeInsets.all(8),
                                   width: 230,
                                   height: 100,
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      stops: [
+                                      stops: const [
                                         0.2,
                                         0.8,
                                       ],
@@ -454,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const EdgeInsets.only(bottom: 10),
                                       child: Text(
                                         categories[index].name,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
@@ -473,22 +470,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  TextField SearchBar() {
+  TextField searchBar(BuildContext context) {
     return TextField(
+      readOnly: true,
+      onTap: () {
+        customDevelopmentShowDialog(context,
+            'Sorry! This feature is under development and will be available in future updates');
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: AppColor.primaryColor, width: 1),
+          borderSide: const BorderSide(color: AppColor.primaryColor, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
+            borderSide: const BorderSide(color: AppColor.primaryColor, width: 1)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: AppColor.primaryColor, width: 1)),
+            borderSide: const BorderSide(color: AppColor.primaryColor, width: 1)),
         fillColor: Colors.white.withOpacity(0.7),
         filled: true,
-        contentPadding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
+        contentPadding: const EdgeInsets.only(left: 20, top: 15, bottom: 15),
         suffixIcon: Icon(
           Icons.tune,
           color: AppColor.primaryColor.withOpacity(0.4),

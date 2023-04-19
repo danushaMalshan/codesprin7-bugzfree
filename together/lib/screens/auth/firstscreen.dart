@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:together/utils/colors.dart';
 
-class firstScreen extends StatefulWidget {
-  const firstScreen({Key? key}) : super(key: key);
+class FirstScreen extends StatefulWidget {
+  const FirstScreen({Key? key}) : super(key: key);
 
   @override
-  State<firstScreen> createState() => _firstScreenState();
+  State<FirstScreen> createState() => _FirstScreenState();
 }
 
-class _firstScreenState extends State<firstScreen> {
+class _FirstScreenState extends State<FirstScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,18 +16,18 @@ class _firstScreenState extends State<firstScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          SizedBox(
+          const SizedBox(
             width: double.infinity,
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 50.0),
-            child: Image(
+            margin: const EdgeInsets.symmetric(vertical: 50.0),
+            child: const Image(
               image: AssetImage("assets/images/logo.jpeg"),
               height: 250,
               width: 250,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 200,
           ),
           loginButtons(

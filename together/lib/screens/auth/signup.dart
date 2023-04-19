@@ -37,25 +37,23 @@ Future<UserCredential?> signInWithGoogle() async {
     // Return the user credential
     return userCredential;
   } catch (error) {
-    // Handle any errors
-    print('Failed to sign in with Google: $error');
+
     return null;
   }
 }
 
 VoidCallback _handleSignInWithGoogle() {
   return () async {
-    // Call the signInWithGoogle() method
+
     UserCredential? userCredential = await signInWithGoogle();
 
-    // Do something with the userCredential, such as updating the UI or navigating to a new page
+
     if (userCredential != null) {
-      print('Signed in with Google: ${userCredential.user?.displayName}');
+  
       navigatorKey.currentState?.pushReplacement(
-            MaterialPageRoute(builder: ((context) => CustomNavigationBar(index: 2))));
+            MaterialPageRoute(builder: ((context) => const CustomNavigationBar(index: 2))));
     } else {
-      print('Failed to sign in with Google');
-      // Show an error message or perform error handling
+     
     }
   };
 }
@@ -110,9 +108,9 @@ class _SignUpState extends State<SignUp> {
                       Navigator.pushReplacementNamed(context, '/home');
                     },
                   ),
-                  SignUpWithEmail(context),
+                  signUpWithEmail(context),
                   const SizedBox(height: 20),
-                  AlreadyhaveAnAccountText(context),
+                  alreadyhaveAnAccountText(context),
                 ],
               ),
             ],
@@ -122,7 +120,7 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  GestureDetector AlreadyhaveAnAccountText(BuildContext context) {
+  GestureDetector alreadyhaveAnAccountText(BuildContext context) {
     return GestureDetector(
         onTap: () {
           Navigator.pushReplacementNamed(context, '/login');
@@ -130,7 +128,7 @@ class _SignUpState extends State<SignUp> {
         child: const Text("Already have an account?"));
   }
 
-  Padding SignUpWithEmail(BuildContext context) {
+  Padding signUpWithEmail(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
       child: ListTile(

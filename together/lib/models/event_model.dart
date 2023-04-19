@@ -3,32 +3,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class EventModel {
   String id;
   String name;
-  String organizer_id;
+  String organizerId;
   String description;
-  DateTime start_date;
-  DateTime end_date;
+  DateTime startDate;
+  DateTime endDate;
   int category;
   double latitude;
   double longitude;
-  String cover_image;
+  String coverImage;
   List<dynamic> images;
-  bool is_approve;
+  bool isApprove;
   String location;
   List<dynamic> tickets;
 
   EventModel(
       {required this.id,
       required this.name,
-      required this.organizer_id,
+      required this.organizerId,
       required this.description,
-      required this.start_date,
-      required this.end_date,
+      required this.startDate,
+      required this.endDate,
       required this.category,
       required this.latitude,
       required this.longitude,
-      required this.cover_image,
+      required this.coverImage,
       required this.images,
-      required this.is_approve,
+      required this.isApprove,
       required this.location,
       required this.tickets});
 
@@ -37,16 +37,16 @@ class EventModel {
     return EventModel(
         id: doc.id,
         name: data['name'],
-        organizer_id: data['organizer_id'],
+        organizerId: data['organizer_id'],
         description: data['description'],
-        start_date: (data['start_date'] as Timestamp).toDate(),
-        end_date: (data['end_date'] as Timestamp).toDate(),
+        startDate: (data['start_date'] as Timestamp).toDate(),
+        endDate: (data['end_date'] as Timestamp).toDate(),
         category: data['category'],
         latitude: data['latitude'],
         longitude: data['longitude'],
-        cover_image: data['cover_image'],
+        coverImage: data['cover_image'],
         images: data['images'],
-        is_approve: data['is_approve'],
+        isApprove: data['is_approve'],
         location: data['location'],
         tickets: data['tickets']);
   }
@@ -55,16 +55,16 @@ class EventModel {
     return {
       'id': id,
       'name': name,
-      'organizer_id': organizer_id,
+      'organizer_id': organizerId,
       'description': description,
-      'start_date': start_date,
-      'end_date': end_date,
+      'start_date': startDate,
+      'end_date': endDate,
       'category': category,
       'latitude': latitude,
       'longitude': longitude,
-      'cover_image': cover_image,
+      'cover_image': coverImage,
       'images': images,
-      'is_approve': is_approve,
+      'is_approve': isApprove,
       'location': location,
       'tickets': tickets
     };

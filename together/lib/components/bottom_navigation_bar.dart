@@ -1,42 +1,38 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:flutter/material.dart';
-import 'package:together/screens/all_messages.dart';
-import 'package:together/screens/event_details.dart';
+import 'package:together/screens/chats/all_messages.dart';
 import 'package:together/screens/find_location.dart';
-import 'package:together/screens/home_screen.dart';
+import 'package:together/screens/home/home_screen.dart';
 import 'package:together/screens/reminders.dart';
-import 'package:together/screens/select_category.dart';
-import 'package:together/screens/user_profile.dart';
+import 'package:together/screens/proflle/user_profile.dart';
 import 'package:together/utils/colors.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  CustomNavigationBar({Key? key, required this.index}) : super(key: key);
-  int index = 2;
+  const CustomNavigationBar({Key? key, required this.index}) : super(key: key);
+  final int index;
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  PersistentTabController _controller =
+  final PersistentTabController _controller =
       PersistentTabController(initialIndex: 2);
 
   List<Widget> _buildScreens() {
-    
     return [
-      myAllMessages(),
-      UserProfileScreen(),
-      HomeScreen(),
-      MapSample(),
-      Reminders()
+      const MyAllMessages(),
+      const UserProfileScreen(),
+      const HomeScreen(),
+      const MapSample(),
+      const Reminders()
     ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(
+        icon: const Icon(
           Icons.chat,
           size: 30,
         ),
@@ -45,7 +41,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(
+        icon: const Icon(
           Icons.person,
           size: 30,
         ),
@@ -54,7 +50,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(
+        icon: const Icon(
           Icons.home,
           size: 30,
         ),
@@ -63,7 +59,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(
+        icon: const Icon(
           Icons.manage_search_outlined,
           size: 30,
         ),
@@ -72,7 +68,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(
+        icon: const Icon(
           Icons.notifications,
           size: 30,
         ),
@@ -95,7 +91,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       backgroundColor: Colors.white,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
-      stateManagement: true,
+      stateManagement: false,
       hideNavigationBarWhenKeyboardShows: true,
       decoration: NavBarDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -103,11 +99,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       ),
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
+      itemAnimationProperties: const ItemAnimationProperties(
         duration: Duration(milliseconds: 200),
         curve: Curves.ease,
       ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
+      screenTransitionAnimation: const ScreenTransitionAnimation(
         animateTabTransition: true,
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),

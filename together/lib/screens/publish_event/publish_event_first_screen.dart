@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -17,10 +15,10 @@ class PublishEventFirstScreen extends StatefulWidget {
 }
 
 class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
-  TextEditingController _ctrlName = TextEditingController();
-  TextEditingController _ctrlDescription = TextEditingController();
-  TextEditingController _ctrlStartDate = TextEditingController();
-  TextEditingController _ctrlEndDate = TextEditingController();
+  final TextEditingController _ctrlName = TextEditingController();
+  final TextEditingController _ctrlDescription = TextEditingController();
+  final TextEditingController _ctrlStartDate = TextEditingController();
+  final TextEditingController _ctrlEndDate = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -29,8 +27,6 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   ShowSnackBar snackBar = ShowSnackBar();
   bool loading = false;
 
-  FirebaseAuth? _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<String> categories = [
     'Art & Culture',
@@ -82,7 +78,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: AppColor.primaryColor,
             ),
           ),
@@ -97,13 +93,23 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   }
 
   Future<TimeOfDay?> pickTime(BuildContext context) async {
-    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    const initialTime = TimeOfDay(hour: 9, minute: 0);
     final newTime = await showTimePicker(
-        context: context,
-        initialTime: startDateTime != null
-            ? TimeOfDay(
-                hour: startDateTime!.hour, minute: startDateTime!.minute)
-            : initialTime);
+      context: context,
+      initialTime: startDateTime != null
+          ? TimeOfDay(hour: startDateTime!.hour, minute: startDateTime!.minute)
+          : initialTime,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColor.primaryColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
     if (newTime == null) return null;
 
     return newTime;
@@ -116,10 +122,10 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
     return Scaffold(
       appBar: myAppBar(context, true),
       body: loading
-          ? Center(
+          ? const Center(
               child: SpinKitWave(
                 color: AppColor.primaryColor,
-                size: 50,
+                size: 40,
               ),
             )
           : SafeArea(
@@ -127,7 +133,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    Title(width),
+                    title(width),
                     textField(Icons.festival_outlined, 'Name of the Event', 1,
                         _ctrlName),
                     textField(
@@ -136,7 +142,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                         'Start Date & Time', _ctrlStartDate, 0),
                     textFieldWithButtons(Icons.edit_calendar, 'End Date & Time',
                         _ctrlEndDate, 1),
-                    DropDownMenu(),
+                    dropDownMenu(),
                     nextButton(context),
                   ],
                 ),
@@ -145,7 +151,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
     );
   }
 
-  Padding DropDownMenu() {
+  Padding dropDownMenu() {
     return Padding(
       padding: const EdgeInsets.only(
         top: 30.0,
@@ -153,7 +159,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
         right: 25.0,
       ),
       child: DropdownButtonFormField(
-        hint: Text('Select Category'),
+        hint: const Text('Select Category'),
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
@@ -162,7 +168,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
               color: AppColor.primaryColor,
             ),
           ),
-          icon: Icon(
+          icon: const Icon(
             Icons.category,
             color: AppColor.primaryColor,
           ),
@@ -192,7 +198,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             value: value,
             child: Text(
               value,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           );
         }).toList(),
@@ -243,7 +249,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
     );
   }
 
-  Container Title(double width) {
+  Container title(double width) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20.0),
       width: width,

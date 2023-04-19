@@ -2,13 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:together/components/snack_bar.dart';
@@ -25,16 +20,16 @@ class SignUpWithEmail extends StatefulWidget {
 
 class _SignUpWithEmailState extends State<SignUpWithEmail> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   File? _image;
   final _picker = ImagePicker();
 
-  TextEditingController _ctrlEmail = TextEditingController();
-  TextEditingController _ctrlPassword = TextEditingController();
-  TextEditingController _ctrlAge = TextEditingController();
-  TextEditingController _ctrlUsername = TextEditingController();
+  final TextEditingController _ctrlEmail = TextEditingController();
+  final TextEditingController _ctrlPassword = TextEditingController();
+  final TextEditingController _ctrlAge = TextEditingController();
+  final TextEditingController _ctrlUsername = TextEditingController();
 
   ShowSnackBar snackBar = ShowSnackBar();
 
@@ -52,7 +47,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: _ctrlEmail.text.trim(), password: _ctrlPassword.text.trim());
 
-      if (credential != null) {
+      
         if (_image != null) {
           final ref =
               _storage.ref().child('images/pro_pic/${_ctrlEmail.text.trim()}');
@@ -66,10 +61,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         await addUserData(credential);
 
         navigatorKey.currentState?.pushReplacement(
-            MaterialPageRoute(builder: ((context) => EmailVerifyScreen())));
-      } else {
-        snackBar.showSnackaBar(context, 'Please verify your email', null);
-      }
+            MaterialPageRoute(builder: ((context) => const EmailVerifyScreen())));
+     
       setState(() {
         loading = false;
       });
@@ -91,7 +84,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     return user != null && user.emailVerified;
   }
 
-  Future<void> _signInWithEmailPassword() async {}
+
 
   Future<void> addUserData(UserCredential credential) async {
     String userID = credential.user!.uid;
@@ -118,7 +111,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: SizedBox(
         width: width,
         height: height,
@@ -131,11 +124,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // AppLogo(width),
-                  ProfilePicture(),
-                  SignInWithEmailPassword(width),
-                  LoginButton(width),
-                  ForgotPasswordText(),
-                  AlreadyHaveAnAccountText(context)
+                  profilePicture(),
+                  signInWithEmailPassword(width),
+                  loginButton(width),
+                  forgotPasswordText(),
+                  alreadyHaveAnAccountText(context)
                 ],
               ),
             ),
@@ -145,7 +138,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  Widget ProfilePicture() {
+  Widget profilePicture() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Stack(
@@ -157,6 +150,14 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               border: Border.all(width: 5, color: Colors.grey.withOpacity(0.4)),
             ),
             child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              
+              ),
+              height: 150,
+              width: 150,
+              clipBehavior: Clip.hardEdge,
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 radius: 65,
@@ -173,15 +174,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                         height: 150,
                       ),
               ),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                // border:
-                //     Border.all(width: 5, color: Colors.grey.withOpacity(0.4)),
-              ),
-              height: 150,
-              width: 150,
-              clipBehavior: Clip.hardEdge,
             ),
           ),
           Positioned(
@@ -198,7 +190,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 child: CircleAvatar(
                   backgroundColor: Colors.grey.shade300,
                   radius: 20,
-                  child: Center(
+                  child: const Center(
                       child: Icon(
                     Icons.camera_alt_outlined,
                     size: 24,
@@ -211,7 +203,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  GestureDetector AlreadyHaveAnAccountText(BuildContext context) {
+  GestureDetector alreadyHaveAnAccountText(BuildContext context) {
     return GestureDetector(
       onTap: loading
           ? null
@@ -241,7 +233,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  Padding ForgotPasswordText() {
+  Padding forgotPasswordText() {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: Text(
@@ -251,14 +243,14 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  Container AppLogo(double width) {
+  Container appLogo(double width) {
     return Container(
-        margin: EdgeInsets.only(bottom: 50),
+        margin: const EdgeInsets.only(bottom: 50),
         width: (width / 100) * 65,
         child: Image.asset('assets/images/logo.jpeg'));
   }
 
-  Padding LoginButton(double width) {
+  Padding loginButton(double width) {
     return Padding(
       padding: const EdgeInsets.only(top: 50),
       child: SizedBox(
@@ -272,29 +264,29 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               snackBar.showSnackaBar(context, 'Fields Cannot be Empty', null);
             }
           },
-          child: loading
-              ? Center(
-                  child: SpinKitWave(color: Colors.white, size: 25),
-                )
-              : Text(
-                  'Sign Up',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
           style: ElevatedButton.styleFrom(
             primary: Colors.blue.shade900,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
           ),
+          child: loading
+              ? const Center(
+                  child: SpinKitWave(color: Colors.white, size: 25),
+                )
+              : const Text(
+                  'Sign Up',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
         ),
       ),
     );
   }
 
-  Container SignInWithEmailPassword(double width) {
+  Container signInWithEmailPassword(double width) {
     return Container(
       height: 330,
       width: width - 60,
@@ -307,7 +299,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomTextField(
+            customTextField(
               controller: _ctrlUsername,
               hint: 'Username',
               isObscure: false,
@@ -319,7 +311,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               width: width - 110,
               color: Colors.grey.withOpacity(0.4),
             ),
-            CustomTextField(
+            customTextField(
                 controller: _ctrlAge,
                 hint: 'Age',
                 isObscure: false,
@@ -330,7 +322,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               width: width - 110,
               color: Colors.grey.withOpacity(0.4),
             ),
-            CustomTextField(
+            customTextField(
                 controller: _ctrlEmail,
                 hint: 'Email',
                 isObscure: false,
@@ -341,7 +333,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               width: width - 110,
               color: Colors.grey.withOpacity(0.4),
             ),
-            CustomTextField(
+            customTextField(
                 controller: _ctrlPassword,
                 hint: 'Password',
                 isObscure: true,
@@ -352,7 +344,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  Padding CustomTextField({
+  Padding customTextField({
     required String hint,
     required TextEditingController controller,
     TextInputType? keyboardType,
@@ -367,7 +359,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         keyboardType: keyboardType,
         controller: controller,
         cursorColor: Colors.grey.withOpacity(0.4),
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.grey, fontSize: 20, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -380,9 +372,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  Padding OrText() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 20),
+  Padding orText() {
+    return const Padding(
+      padding: EdgeInsets.only(top: 20, bottom: 20),
       child: Text(
         'OR',
         style: TextStyle(color: Colors.grey, fontSize: 18),
@@ -390,7 +382,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     );
   }
 
-  GestureDetector AlreadyhaveAnAccountText(BuildContext context) {
+  GestureDetector alreadyhaveAnAccountText(BuildContext context) {
     return GestureDetector(
         onTap: () {
           Navigator.pushReplacementNamed(context, '/login');
@@ -398,13 +390,13 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         child: const Text("Already have an account?"));
   }
 
-  Padding CustomSignupButton(
+  Padding customSignupButton(
       Color color, String image, String title, Color txtColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
       child: InkWell(
         onTap: () {},
-        child: Container(
+        child: SizedBox(
           height: 60,
           child: ListTile(
             shape: RoundedRectangleBorder(
@@ -420,7 +412,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 textAlign: TextAlign.center,
               ),
             ),
-            trailing: Container(
+            trailing: const SizedBox(
               height: 32,
               width: 32,
             ),

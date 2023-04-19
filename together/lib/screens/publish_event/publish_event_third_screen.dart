@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geocoding/geocoding.dart';
@@ -10,7 +8,7 @@ import 'package:together/screens/publish_event/publish_event_fourth_screen.dart'
 import 'package:together/utils/colors.dart';
 
 class PublishEventThirdScreen extends StatefulWidget {
-  PublishEventThirdScreen(
+ const PublishEventThirdScreen(
       {Key? key,
       required this.eventName,
       required this.description,
@@ -19,12 +17,12 @@ class PublishEventThirdScreen extends StatefulWidget {
       required this.tickets,
       required this.category})
       : super(key: key);
-  String eventName;
-  String description;
-  DateTime startDate;
-  DateTime endDate;
-  List<Map<String, dynamic>> tickets;
-  int category;
+ final String eventName;
+ final String description;
+ final DateTime startDate;
+ final DateTime endDate;
+ final List<Map<String, dynamic>> tickets;
+ final int category;
   @override
   State<PublishEventThirdScreen> createState() =>
       _PublishEventThirdScreenState();
@@ -33,14 +31,14 @@ class PublishEventThirdScreen extends StatefulWidget {
 class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
-  TextEditingController _ctrlSearch = TextEditingController();
+  final TextEditingController _ctrlSearch = TextEditingController();
   ShowSnackBar snackBar = ShowSnackBar();
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
 
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   LatLng? latLng;
   void _onSearch() async {
     try {
@@ -71,7 +69,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
         target: latLng,
         zoom: 15,
       )));
-      print(placemark.name);
+     
     } catch (e) {
       snackBar.showSnackaBar(context, e.toString(), null);
     }
@@ -105,8 +103,8 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
         width: width,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
               child: Text(
                 'Mark Your Event Location',
                 style: TextStyle(
@@ -162,8 +160,8 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                             fillColor: Colors.white.withOpacity(0.7),
                             filled: true,
                             contentPadding:
-                                EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                            suffixIcon: Icon(
+                                const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                            suffixIcon: const Icon(
                               Icons.search,
                               color: Colors.black,
                             ),
@@ -187,7 +185,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                     style: ElevatedButton.styleFrom(
                         primary: AppColor.primaryColor,
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(
+                          side: const BorderSide(
                               width: 2, color: AppColor.primaryColor),
                           borderRadius: BorderRadius.circular(10),
                         )),
@@ -212,7 +210,7 @@ class _PublishEventThirdScreenState extends State<PublishEventThirdScreen> {
                             context, 'Please select your event location', null);
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       'Next',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
