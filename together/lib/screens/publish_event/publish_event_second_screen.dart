@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:together/components/appbar.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/screens/publish_event/publish_event_third_screen.dart';
 import 'package:together/utils/colors.dart';
 
 class PublishEventSecondScreen extends StatefulWidget {
-  PublishEventSecondScreen(
+ const PublishEventSecondScreen(
       {Key? key,
       required this.eventName,
       required this.description,
       required this.startDate,
-      required this.endDate})
+      required this.endDate,
+      required this.category})
       : super(key: key);
-  String eventName;
-  String description;
-  DateTime startDate;
-  DateTime endDate;
+final  String eventName;
+final  String description;
+final  DateTime startDate;
+final  DateTime endDate;
+final  int category;
   @override
   State<PublishEventSecondScreen> createState() =>
       _PublishEventSecondScreenState();
@@ -63,7 +64,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
               child: ListView.builder(
                   itemCount: tickets.length,
                   itemBuilder: (context, index) {
-                    return PriceHolder(index);
+                    return priceHolder(index);
                   }),
             ),
             Padding(
@@ -80,7 +81,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.white,
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(
+                                side: const BorderSide(
                                     width: 2, color: AppColor.primaryColor),
                                 borderRadius: BorderRadius.circular(10),
                               )),
@@ -94,7 +95,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                               tickets.add(ticket);
                             });
                           },
-                          child: Text(
+                          child: const Text(
                             'Add more Tickets',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -115,12 +116,12 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                           style: ElevatedButton.styleFrom(
                               primary: AppColor.primaryColor,
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(
+                                side: const BorderSide(
                                     width: 2, color: AppColor.primaryColor),
                                 borderRadius: BorderRadius.circular(10),
                               )),
                           onPressed: () {
-                            print(!validate());
+                          
                             emptyFields = false;
                             if (!validate()) {
                               Navigator.push(
@@ -128,18 +129,20 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           PublishEventThirdScreen(
-                                              description: widget.description,
-                                              eventName: widget.eventName,
-                                              startDate: widget.startDate,
-                                              endDate: widget.endDate,
-                                              tickets: tickets)));
+                                            description: widget.description,
+                                            eventName: widget.eventName,
+                                            startDate: widget.startDate,
+                                            endDate: widget.endDate,
+                                            tickets: tickets,
+                                            category: widget.category,
+                                          )));
                             } else {
                               ShowSnackBar snackBar = ShowSnackBar();
                               snackBar.showSnackaBar(
-                                  context, 'Fields cannot be empty');
+                                  context, 'Fields cannot be empty', null);
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             'Next',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
@@ -157,7 +160,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
     );
   }
 
-  Container PriceHolder(int index) {
+  Container priceHolder(int index) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -194,7 +197,7 @@ class _PublishEventSecondScreenState extends State<PublishEventSecondScreen> {
           } else {
             tickets[index]['price'] = double.parse(value).toStringAsFixed(2);
           }
-          print(tickets);
+         
         },
         decoration: InputDecoration(
           icon: Icon(

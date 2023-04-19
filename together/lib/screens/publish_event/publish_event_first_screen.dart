@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:together/components/snack_bar.dart';
 import 'package:together/screens/publish_event/publish_event_second_screen.dart';
 import 'package:together/utils/colors.dart';
 import '../../components/appbar.dart';
@@ -13,13 +15,37 @@ class PublishEventFirstScreen extends StatefulWidget {
 }
 
 class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
-  TextEditingController _ctrlName = TextEditingController();
-  TextEditingController _ctrlDescription = TextEditingController();
-  TextEditingController _ctrlStartDate = TextEditingController();
-  TextEditingController _ctrlEndDate = TextEditingController();
+  final TextEditingController _ctrlName = TextEditingController();
+  final TextEditingController _ctrlDescription = TextEditingController();
+  final TextEditingController _ctrlStartDate = TextEditingController();
+  final TextEditingController _ctrlEndDate = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
   DateTime? startDateTime;
   DateTime? endDateTime;
+  ShowSnackBar snackBar = ShowSnackBar();
+  bool loading = false;
+
+
+  List<String> categories = [
+    'Art & Culture',
+    'Music',
+    'Education',
+    'Sports',
+    'Religious & Spirituality',
+    'Pet & Animals',
+    'Hobbies & Passions',
+    'Dancing',
+    'Charity',
+    'Politics',
+    'Fitness Workshops',
+    'Technology Workshops',
+    'Consulting',
+    'Volunteering',
+    'Seasonal Events',
+  ];
+  String? dropdownValue;
 
   Future pickDateTime(BuildContext context, int status) async {
     final date = await pickDate(context);
@@ -52,7 +78,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: AppColor.primaryColor,
             ),
           ),
@@ -67,13 +93,23 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
   }
 
   Future<TimeOfDay?> pickTime(BuildContext context) async {
-    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    const initialTime = TimeOfDay(hour: 9, minute: 0);
     final newTime = await showTimePicker(
-        context: context,
-        initialTime: startDateTime != null
-            ? TimeOfDay(
-                hour: startDateTime!.hour, minute: startDateTime!.minute)
-            : initialTime);
+      context: context,
+      initialTime: startDateTime != null
+          ? TimeOfDay(hour: startDateTime!.hour, minute: startDateTime!.minute)
+          : initialTime,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColor.primaryColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
     if (newTime == null) return null;
 
     return newTime;
@@ -85,23 +121,99 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
 
     return Scaffold(
       appBar: myAppBar(context, true),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: <Widget>[
-              Title(width),
-              textField(
-                  Icons.festival_outlined, 'Name of the Event', 1, _ctrlName),
-              textField(Icons.description, 'Description', 4, _ctrlDescription),
-              textFieldWithButtons(
-                  Icons.edit_calendar, 'Start Date & Time', _ctrlStartDate, 0),
-              textFieldWithButtons(
-                  Icons.edit_calendar, 'End Date & Time', _ctrlEndDate, 1),
-              nextButton(context),
-            ],
+      body: loading
+          ? const Center(
+              child: SpinKitWave(
+                color: AppColor.primaryColor,
+                size: 40,
+              ),
+            )
+          : SafeArea(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    title(width),
+                    textField(Icons.festival_outlined, 'Name of the Event', 1,
+                        _ctrlName),
+                    textField(
+                        Icons.description, 'Description', 4, _ctrlDescription),
+                    textFieldWithButtons(Icons.edit_calendar,
+                        'Start Date & Time', _ctrlStartDate, 0),
+                    textFieldWithButtons(Icons.edit_calendar, 'End Date & Time',
+                        _ctrlEndDate, 1),
+                    dropDownMenu(),
+                    nextButton(context),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  Padding dropDownMenu() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 30.0,
+        left: 25.0,
+        right: 25.0,
+      ),
+      child: DropdownButtonFormField(
+        hint: const Text('Select Category'),
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          icon: const Icon(
+            Icons.category,
+            color: AppColor.primaryColor,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 2,
+              color: AppColor.primaryColor,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.red,
+            ),
+          ),
+          hintText: 'Select Category',
+          hintStyle: const TextStyle(
+            fontSize: 18.0,
+            //color: AppColor.primaryColor,
           ),
         ),
+        value: dropdownValue,
+        items: categories.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 18),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            dropdownValue = newValue!;
+          });
+        },
+        validator: (value) {
+          if (value == null || value == '') {
+            return "Select Event Category";
+          } else {
+            return null;
+          }
+        },
       ),
     );
   }
@@ -116,8 +228,9 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
             primary: AppColor.primaryColor,
             padding: const EdgeInsets.symmetric(vertical: 20.0),
           ),
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              int category = categories.indexOf(dropdownValue!);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -126,6 +239,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
                             eventName: _ctrlName.text,
                             startDate: startDateTime!,
                             endDate: endDateTime!,
+                            category: category,
                           )));
             }
           },
@@ -135,7 +249,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
     );
   }
 
-  Container Title(double width) {
+  Container title(double width) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20.0),
       width: width,

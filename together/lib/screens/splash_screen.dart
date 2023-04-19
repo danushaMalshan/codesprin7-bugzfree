@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
-import 'package:together/components/bottom_navigation_bar.dart';
-import 'package:together/screens/auth/signup.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -25,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             User? user = snapshot.data as User?;
-            Future.delayed(Duration(seconds: 5)).then((value) => {
+            Future.delayed(const Duration(seconds: 5)).then((value) => {
                   if (user == null)
                     {
                       Navigator.pushReplacementNamed(
