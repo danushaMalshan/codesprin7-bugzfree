@@ -22,8 +22,13 @@ class _SplashScreenState extends State<SplashScreen> {
             if (snapshot.connectionState == ConnectionState.active) {
               User? user = snapshot.data as User?;
               Future.delayed(const Duration(seconds: 5)).then((value) => {
-                    if (user == null)
-                      {Navigator.pushReplacementNamed(context, '/login')}
+                    if (user == null || !user.emailVerified)
+                      {
+                        if (!(user?.emailVerified ?? true)) {
+                          user?.delete()
+                        },
+                        Navigator.pushReplacementNamed(context, '/login')
+                      }
                     else
                       {Navigator.pushReplacementNamed(context, '/home')}
                   });
