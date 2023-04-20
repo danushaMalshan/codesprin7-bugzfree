@@ -78,7 +78,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    List<UserInfo>? providerData = user?.providerData;
+    
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(context, true),

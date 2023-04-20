@@ -2,15 +2,19 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:together/components/appbar.dart';
 import 'package:together/components/show_dialog.dart';
+import 'package:together/components/snack_bar.dart';
 import 'dart:async';
 
 import 'package:together/models/event_model.dart';
 import 'package:together/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetailsScreen extends StatefulWidget {
   const EventDetailsScreen({
@@ -53,6 +57,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
     _markerAdd();
   }
 
+  Future share() async {
+    Share.share(
+        'Hey, I found a new Event. Check this out! \n\n${widget.event.name} \n\n ${widget.event.description} \n\n Ticket : ${widget.event.tickets?[0]['name']} - Rs. ${widget.event.tickets?[0]['price']}/= \n\n Location : ${widget.event.location}');
+  }
+
   void _markerAdd() {
     setState(() {
       _markers.add(
@@ -65,6 +74,17 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         ),
       );
     });
+  }
+
+  Future<void> _launchUrl() async {
+    final Uri url = Uri.parse(widget.event.ticketReservationLink ?? 'sss');
+    try {
+      await launchUrl(url);
+    } catch (e) {
+      ShowSnackBar snackBar = ShowSnackBar();
+      snackBar.showSnackaBar(
+          context, 'Could not launch because of invalid url $url', null);
+    }
   }
 
   void _onTabSelect() {
@@ -104,7 +124,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                 customTabBar(),
                 eventButtons(),
                 eventDescription(),
-                eventPhotos(context),
+                (widget.event.images == null ||
+                        widget.event.images?.length == 0)
+                    ? Container()
+                    : eventPhotos(context),
                 eventLocationInMap(width),
                 ticketReservationsButton(width),
               ],
@@ -123,11 +146,15 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           Expanded(
             flex: 1,
             child: Container(
-              height: 75,
+              height: 60,
               margin: const EdgeInsets.only(bottom: 40, left: 10, right: 10),
               width: width,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: widget.event.ticketReservationLink != null
+                    ? () {
+                        _launchUrl();
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   primary: AppColor.primaryColor,
                   shape: RoundedRectangleBorder(
@@ -138,8 +165,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                   'Ticket Reservations',
                   style: TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -148,50 +175,41 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           Expanded(
             flex: 1,
             child: Container(
-              height: 75,
+              height: 60,
               margin: const EdgeInsets.only(bottom: 40, right: 10),
               width: width,
               child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  primary: AppColor.primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: const Text(
-                  'Ticket Reservations',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              height: 75,
-              margin: const EdgeInsets.only(bottom: 40, right: 10),
-              width: width,
-              child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  share();
+                },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(width: 2, color: AppColor.primaryColor),
+                    side: const BorderSide(
+                        width: 2, color: AppColor.primaryColor),
                   ),
                 ),
-                child: const Text(
-                  'Share on',
-                  style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      'Share',
+                      style: TextStyle(
+                          color: AppColor.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    FaIcon(
+                      FontAwesomeIcons.solidShareFromSquare,
                       color: AppColor.primaryColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15),
-                  textAlign: TextAlign.center,
+                      size: 30,
+                    )
+                  ],
                 ),
               ),
             ),
@@ -217,7 +235,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
         Container(
           clipBehavior: Clip.hardEdge,
           margin: const EdgeInsets.only(top: 30, bottom: 40),
-          height: 200,
+          height: 300,
           width: width,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: GoogleMap(
@@ -327,7 +345,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           Expanded(
             flex: 1,
             child: SizedBox(
-              height: 75,
+              height: 60,
               child: Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: ElevatedButton(
@@ -345,8 +363,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                     'Add Reminder',
                     style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                 ),
               ),
@@ -355,7 +373,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           Expanded(
             flex: 1,
             child: SizedBox(
-              height: 70,
+              height: 60,
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: ElevatedButton(
@@ -374,8 +392,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                     'Contact Organizer',
                     style: TextStyle(
                         color: AppColor.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                 ),
               ),
@@ -467,7 +485,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           const Icon(
             Icons.bookmark,
             color: Colors.white,
-            size: 27,
+            size: 25,
           ),
           const SizedBox(
             width: 10,
@@ -475,7 +493,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
           Text(
             text,
             style: const TextStyle(
-                color: Colors.white, fontSize: 30, fontWeight: FontWeight.w500),
+                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500),
           )
         ],
       ),
@@ -485,11 +503,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
   SizedBox eventBanner(double height, double width) {
     return SizedBox(
       width: width,
-      height: 250,
       child: Image.network(
         widget.event.coverImage ??
             'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fevents%2Fdefault_cover.jpg?alt=media&token=4faf4063-a0f9-409a-90a7-be92d76375ee',
-        fit: BoxFit.cover,
+        fit: BoxFit.fitWidth,
       ),
     );
   }

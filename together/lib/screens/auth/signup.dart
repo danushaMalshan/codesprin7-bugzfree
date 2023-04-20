@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:together/components/bottom_navigation_bar.dart';
+import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/global.dart';
 import 'package:together/utils/colors.dart';
@@ -113,14 +114,19 @@ class _SignUpState extends State<SignUp> {
                                 "Continue with Apple",
                                 "assets/icons/apple_logo.png",
                                 Colors.white,
-                                Colors.black,
-                                null),
+                                Colors.black, () {
+                              customDevelopmentShowDialog(context,
+                                  'Sorry! This feature is under development. for now, you can use the sign in with the email & sign in with Google');
+                            }),
                             loginButtons(
                               "Continue with Facebook",
                               "assets/icons/facebook.png",
                               Colors.white,
                               const Color(0xff1877f2),
-                              null,
+                              () {
+                                customDevelopmentShowDialog(context,
+                                    'Sorry! This feature is under development. for now, you can use the sign in with the email & sign in with Google');
+                              },
                             ),
                             loginButtons(
                               "Continue with Google",
@@ -132,8 +138,8 @@ class _SignUpState extends State<SignUp> {
                               },
                             ),
                             signUpWithEmail(context),
-                            const SizedBox(height: 20),
-                            alreadyhaveAnAccountText(context),
+                            const SizedBox(height: 15),
+                            alreadyHaveAnAccountText(context),
                           ],
                         ),
                       ],
@@ -145,12 +151,36 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  GestureDetector alreadyhaveAnAccountText(BuildContext context) {
+  GestureDetector alreadyHaveAnAccountText(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          Navigator.pushReplacementNamed(context, '/login');
-        },
-        child: const Text("Already have an account?"));
+      onTap: () {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 0),
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Already have an account? ',
+                style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+              ),
+              TextSpan(
+                text: 'Login',
+                style: TextStyle(
+                    color: Colors.blue.shade900,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Padding signUpWithEmail(BuildContext context) {

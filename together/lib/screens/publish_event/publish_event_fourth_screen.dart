@@ -63,18 +63,22 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
       if (user != null) {
         final random = Random();
         final randomNumber = random.nextInt(10000);
-        final coverRef = _storage.ref().child(
-            'images/events/${user.email}/${widget.eventName}$randomNumber/cover_image');
-        await coverRef.putFile(_coverImage!);
-        final coverImageUrl = await coverRef.getDownloadURL();
-        _coverImgUrl = coverImageUrl;
+        if (_coverImage != null) {
+          final coverRef = _storage.ref().child(
+              'images/events/${user.email}/${widget.eventName}$randomNumber/cover_image');
+          await coverRef.putFile(_coverImage!);
+          final coverImageUrl = await coverRef.getDownloadURL();
+          _coverImgUrl = coverImageUrl;
+        }
 
-        for (int i = 0; i < _images.length; i++) {
-          final ref = _storage.ref().child(
-              'images/events/${user.email}/${widget.eventName}$randomNumber/img$i');
-          await ref.putFile(_images[i]);
-          final imageUrl = await ref.getDownloadURL();
-          _imagesUrl.add(imageUrl);
+        if (_images.isNotEmpty) {
+          for (int i = 0; i < _images.length; i++) {
+            final ref = _storage.ref().child(
+                'images/events/${user.email}/${widget.eventName}$randomNumber/img$i');
+            await ref.putFile(_images[i]);
+            final imageUrl = await ref.getDownloadURL();
+            _imagesUrl.add(imageUrl);
+          }
         }
 
         EventModel event = EventModel(
@@ -87,7 +91,7 @@ class _PublishEventFourthScreenState extends State<PublishEventFourthScreen> {
             category: widget.category,
             latitude: widget.latLng.latitude,
             longitude: widget.latLng.longitude,
-            coverImage: _coverImgUrl!,
+            coverImage: _coverImgUrl,
             isApprove: false,
             images: _imagesUrl,
             location: widget.location,
