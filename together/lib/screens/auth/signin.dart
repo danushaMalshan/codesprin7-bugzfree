@@ -18,10 +18,14 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _ctrlEmail = TextEditingController();
   final TextEditingController _ctrlPassword = TextEditingController();
+
   DateTime? _lastPressed;
+
   final ShowSnackBar _snackBar = ShowSnackBar();
+
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  
   bool _loading = false;
 
   Future<void> _signIn() async {

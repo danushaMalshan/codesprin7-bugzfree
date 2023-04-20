@@ -41,7 +41,7 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
             stream: FirebaseFirestore.instance
                 .collection('events')
                 .where('category', isEqualTo: widget.id)
-                .where('start_date', isGreaterThan: today)
+                .where('start_date', isGreaterThan: today).where('is_approve',isEqualTo: true)
                 .orderBy('start_date', descending: true)
                 .limit(50)
                 .snapshots(),
