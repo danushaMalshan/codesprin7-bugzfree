@@ -7,7 +7,6 @@ import 'package:together/components/bottom_navigation_bar.dart';
 import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/global.dart';
-import 'package:together/utils/colors.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -88,12 +87,11 @@ class _SignInScreenState extends State<SignInScreen> {
       });
     } on FirebaseException catch (e) {
       _snackBar.showSnackaBar(context, e.message.toString(), null);
-     
+
       setState(() {
         _loading = false;
       });
     } catch (e) {
-    
       _snackBar.showSnackaBar(context, e.toString(), null);
       setState(() {
         _loading = false;
@@ -179,8 +177,6 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
- 
-
   GestureDetector dontHaveAnAccountText(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -216,9 +212,15 @@ class _SignInScreenState extends State<SignInScreen> {
   Padding forgotPasswordText() {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
-      child: Text(
-        'Forgot Password?',
-        style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+      child: GestureDetector(
+        onTap: () {
+          customDevelopmentShowDialog(context,
+              'Sorry! This feature is under development and will be available in future updates');
+        },
+        child: Text(
+          'Forgot Password?',
+          style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+        ),
       ),
     );
   }

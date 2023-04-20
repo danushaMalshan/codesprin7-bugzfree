@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:together/components/show_dialog.dart';
 import 'package:together/components/snack_bar.dart';
 import 'package:together/global.dart';
 import 'package:together/screens/auth/email_verify.dart';
@@ -58,8 +59,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
       await addUserData(credential);
 
-      navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: ((context) => EmailVerifyScreen(name:_ctrlUsername.text,email: _ctrlEmail.text))));
+      navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: ((context) => EmailVerifyScreen(
+              name: _ctrlUsername.text, email: _ctrlEmail.text))));
 
       setState(() {
         loading = false;
@@ -254,9 +256,15 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   Padding forgotPasswordText() {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
-      child: Text(
-        'Forgot Password?',
-        style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+      child: GestureDetector(
+        onTap: () {
+          customDevelopmentShowDialog(context,
+              'Sorry! This feature is under development and will be available in future updates');
+        },
+        child: Text(
+          'Forgot Password?',
+          style: TextStyle(color: Colors.blue.shade900, fontSize: 18),
+        ),
       ),
     );
   }

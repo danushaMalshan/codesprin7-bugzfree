@@ -81,30 +81,30 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
                 } else {
                   return Stack(children: [
                     bannerImage(width, height),
-                    Positioned.fill(
-                      top: 30,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 40),
-                          child: Text(
-                            widget.name,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 50),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Positioned.fill(
+                    //   bottom: 20,
+                    //   child: Align(
+                    //     alignment: Alignment.bottomCenter,
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.only(bottom: 40),
+                    //       child: Text(
+                    //         widget.name,
+                    //         style: const TextStyle(
+                    //             color: Colors.white,
+                    //             fontWeight: FontWeight.bold,
+                    //             fontSize: 50),
+                    //         textAlign: TextAlign.center,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     Positioned(
                       bottom: 0,
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           width: width,
-                          height: (height / 10) * 6,
+                          height: height * 0.62,
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
@@ -190,20 +190,22 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
                     ),
                   ),
                   Positioned.fill(
+                      bottom: 10,
+                      left: 30,
                       child: Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        events[index].name ?? '',
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ))
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            events[index].name ?? '',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ))
                 ],
               ),
             )),
@@ -216,7 +218,7 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
       top: 0,
       child: Container(
         width: width,
-        height: (height / 10) * 6,
+        height: height * 0.25,
         decoration: BoxDecoration(
           image: DecorationImage(
               colorFilter: ColorFilter.mode(
@@ -224,11 +226,22 @@ class _CategoryEventsScreenState extends State<CategoryEventsScreen> {
               image: NetworkImage(widget.image),
               fit: BoxFit.cover),
         ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: Text(
+              widget.name,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
       ),
     );
   }
-
-  
 
   Widget searchBar() {
     return Padding(

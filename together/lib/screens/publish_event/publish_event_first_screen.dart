@@ -257,7 +257,7 @@ class _PublishEventFirstScreenState extends State<PublishEventFirstScreen> {
               )),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              int category = categories.indexOf(dropdownValue!);
+              int category = categories.indexOf(dropdownValue!)+1;
               Navigator.push(
                   context,
                   MaterialPageRoute(

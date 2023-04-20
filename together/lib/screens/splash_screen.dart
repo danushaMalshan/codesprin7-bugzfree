@@ -23,14 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
               User? user = snapshot.data as User?;
               Future.delayed(const Duration(seconds: 5)).then((value) => {
                     if (user == null)
-                      {
-                        Navigator.pushReplacementNamed(
-                            context, '/sign_up')
-                      }
+                      {Navigator.pushReplacementNamed(context, '/login')}
                     else
                       {Navigator.pushReplacementNamed(context, '/home')}
                   });
-    
+
               return Center(child: Image.asset('assets/icons/splash_logo.gif'));
             } else {
               // Connection is not yet established

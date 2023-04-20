@@ -174,7 +174,10 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
                       eventName(),
                       customTabBar(),
                       eventDescription(),
-                      eventPhotos(context),
+                      (widget.event.images == null ||
+                              widget.event.images?.length == 0)
+                          ? Container()
+                          : eventPhotos(context),
                       eventLocationInMap(width),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -283,7 +286,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
         Container(
           clipBehavior: Clip.hardEdge,
           margin: const EdgeInsets.only(top: 30, bottom: 40),
-          height: 200,
+          height: 300,
           width: width,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: GoogleMap(
@@ -527,7 +530,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
           const Icon(
             Icons.bookmark,
             color: Colors.white,
-            size: 27,
+            size: 25,
           ),
           const SizedBox(
             width: 10,
@@ -535,7 +538,7 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
           Text(
             text,
             style: const TextStyle(
-                color: Colors.white, fontSize: 30, fontWeight: FontWeight.w500),
+                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500),
           )
         ],
       ),
@@ -545,11 +548,10 @@ class _PendingEventDetailsScreenState extends State<PendingEventDetailsScreen>
   SizedBox eventBanner(double height, double width) {
     return SizedBox(
       width: width,
-      height: 250,
       child: Image.network(
         widget.event.coverImage ??
             'https://firebasestorage.googleapis.com/v0/b/together-d1575.appspot.com/o/images%2Fevents%2Fdefault_cover.jpg?alt=media&token=4faf4063-a0f9-409a-90a7-be92d76375ee',
-        fit: BoxFit.cover,
+        fit: BoxFit.fitWidth,
       ),
     );
   }
